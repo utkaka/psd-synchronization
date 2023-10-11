@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	public static class Util {
 		[DebuggerDisplay("Top = {Top}, Bottom = {Bottom}, Left = {Left}, Right = {Right}")]
 		public struct RectanglePosition {

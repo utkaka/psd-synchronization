@@ -19,7 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	/// <summary>
 	/// Reads PSD data types in big-endian byte order.
 	/// </summary>

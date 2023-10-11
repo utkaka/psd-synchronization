@@ -17,8 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	public class RleWriter {
 		private int maxPacketLength = 128;
 

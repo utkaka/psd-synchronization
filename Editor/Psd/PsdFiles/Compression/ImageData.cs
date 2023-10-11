@@ -13,7 +13,7 @@
 using System;
 using System.Drawing;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Compression {
+namespace com.utkaka.Psd.PsdFiles.Compression {
 	public abstract class ImageData {
 		public int BitDepth { get; private set; }
 

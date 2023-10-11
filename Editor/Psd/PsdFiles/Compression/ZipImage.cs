@@ -15,7 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Compression {
+namespace com.utkaka.Psd.PsdFiles.Compression {
 	public class ZipImage : ImageData {
 		private MemoryStream zipDataStream;
 		private DeflateStream zipStream;

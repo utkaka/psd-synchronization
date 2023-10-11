@@ -1,12 +1,21 @@
+/////////////////////////////////////////////////////////////////////////////////
+//
+// This software is provided under the MIT License:
+//   Copyright (c) 2022-2023 Anton Alexeyev
+//
+// See LICENSE for complete licensing and attribution information.
+//
+/////////////////////////////////////////////////////////////////////////////////
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors;
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors.Elements;
+using com.utkaka.Psd.PsdFiles.Descriptors;
+using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
-    public class LinkedFilesInfo : LayerInfo {
+namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+    public class LinkedFilesInfo : AbstractLayerInfo {
         public override string Key => _key;
         public override string Signature => "8BIM";
 

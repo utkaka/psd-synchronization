@@ -12,7 +12,7 @@
 
 using System;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.ImageResources {
 	public class VersionInfo : ImageResource {
 		public override ResourceID ID => ResourceID.VersionInfo;
 

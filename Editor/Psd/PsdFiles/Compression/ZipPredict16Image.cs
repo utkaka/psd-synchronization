@@ -13,7 +13,7 @@
 using System;
 using System.Drawing;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Compression {
+namespace com.utkaka.Psd.PsdFiles.Compression {
 	public class ZipPredict16Image : ImageData {
 		private ImageData zipImage;
 

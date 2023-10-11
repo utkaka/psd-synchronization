@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
-using com.utkaka.PsdPlugin.Layers;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.Layers;
+using com.utkaka.Psd.PsdFiles;
+using com.utkaka.Psd.PsdFiles.ImageResources;
+using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
 
 namespace com.utkaka.Psd {
 	public static class DocumentLoader {
@@ -27,8 +30,8 @@ namespace com.utkaka.Psd {
 			GroupLayer parentLayer = null;
 			for (var i = psdFile.Layers.Count - 1; i >= 0; i--) {
 				var psdFileLayer = psdFile.Layers[i];
-				var sectionInfo = (LayerSectionInfo)psdFileLayer.AdditionalInfo
-					.SingleOrDefault(x => x is LayerSectionInfo);
+				var sectionInfo = (AbstractLayerSectionInfo)psdFileLayer.AdditionalInfo
+					.SingleOrDefault(x => x is AbstractLayerSectionInfo);
 				AbstractLayer layer = null;
 				if (sectionInfo == null || sectionInfo.SectionType == LayerSectionType.Layer) {
 					var typeToolInfo = psdFileLayer.AdditionalInfo

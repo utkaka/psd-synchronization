@@ -19,8 +19,9 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers {
 	[DebuggerDisplay("Name = {Name}")]
 	public class Layer {
 		internal PsdFile PsdFile { get; private set; }
@@ -96,7 +97,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 
 		public MaskInfo Masks { get; set; }
 
-		public List<LayerInfo> AdditionalInfo { get; set; }
+		public List<AbstractLayerInfo> AdditionalInfo { get; set; }
 
 		///////////////////////////////////////////////////////////////////////////
 
@@ -105,7 +106,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			Rect = Rectangle.Empty;
 			Channels = new ChannelList();
 			BlendModeKey = PsdBlendMode.Normal;
-			AdditionalInfo = new List<LayerInfo>();
+			AdditionalInfo = new List<AbstractLayerInfo>();
 		}
 
 		internal Layer(PsdBinaryReader reader, PsdFile psdFile)
@@ -149,7 +150,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			foreach (var adjustmentInfo in AdditionalInfo) {
 				switch (adjustmentInfo.Key) {
 					case "luni":
-						Name = ((LayerUnicodeName) adjustmentInfo).Name;
+						Name = ((AbstractLayerUnicodeName) adjustmentInfo).Name;
 						break;
 				}
 			}
@@ -195,15 +196,15 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 
 			// Create or update the Unicode layer name to be consistent with the
 			// ANSI layer name.
-			var layerUnicodeNames = AdditionalInfo.Where(x => x is LayerUnicodeName);
+			var layerUnicodeNames = AdditionalInfo.Where(x => x is AbstractLayerUnicodeName);
 			if (layerUnicodeNames.Count() > 1) {
 				throw new PsdInvalidException(
-					$"{nameof(Layer)} can only have one {nameof(LayerUnicodeName)}.");
+					$"{nameof(Layer)} can only have one {nameof(AbstractLayerUnicodeName)}.");
 			}
 
-			var layerUnicodeName = (LayerUnicodeName) layerUnicodeNames.FirstOrDefault();
+			var layerUnicodeName = (AbstractLayerUnicodeName) layerUnicodeNames.FirstOrDefault();
 			if (layerUnicodeName == null) {
-				layerUnicodeName = new LayerUnicodeName(Name);
+				layerUnicodeName = new AbstractLayerUnicodeName(Name);
 				AdditionalInfo.Add(layerUnicodeName);
 			} else if (layerUnicodeName.Name != Name) {
 				layerUnicodeName.Name = Name;
@@ -244,7 +245,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 				// can be much longer.
 				writer.WritePascalString(Name, 4, 31);
 
-				foreach (LayerInfo info in AdditionalInfo) {
+				foreach (AbstractLayerInfo info in AdditionalInfo) {
 					info.Save(writer,
 						globalLayerInfo: false,
 						isLargeDocument: PsdFile.IsLargeDocument);

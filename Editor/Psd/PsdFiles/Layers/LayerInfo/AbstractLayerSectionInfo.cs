@@ -12,7 +12,7 @@
 
 using System;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 	public enum LayerSectionType {
 		Layer = 0,
 		OpenFolder = 1,
@@ -28,7 +28,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 	/// <summary>
 	/// Layer sections are known as Groups in the Photoshop UI.
 	/// </summary>
-	public class LayerSectionInfo : LayerInfo {
+	public class AbstractLayerSectionInfo : AbstractLayerInfo {
 		public override string Signature => "8BIM";
 
 		private string key;
@@ -57,13 +57,13 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			}
 		}
 
-		public LayerSectionInfo(string key, LayerSectionSubtype? subtype, LayerSectionType sectionType) {
+		public AbstractLayerSectionInfo(string key, LayerSectionSubtype? subtype, LayerSectionType sectionType) {
 			this.key = key;
 			this.subtype = subtype;
 			SectionType = sectionType;
 		}
 
-		public LayerSectionInfo(PsdBinaryReader reader, string key, int dataLength) {
+		public AbstractLayerSectionInfo(PsdBinaryReader reader, string key, int dataLength) {
 			// The key for layer section info is documented to be "lsct".  However,
 			// some Photoshop files use the undocumented key "lsdk", with apparently
 			// the same data format.

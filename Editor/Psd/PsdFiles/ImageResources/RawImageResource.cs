@@ -10,7 +10,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.ImageResources {
 	/// <summary>
 	/// Stores the raw data for unimplemented image resource types.
 	/// </summary>

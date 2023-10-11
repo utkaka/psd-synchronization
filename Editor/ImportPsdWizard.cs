@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
-using com.utkaka.PsdPlugin;
-using com.utkaka.PsdPlugin.Layers;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.Layers;
+using com.utkaka.Psd.PsdFiles;
 using TMPro;
 using UnityEditor;
 using UnityEngine;

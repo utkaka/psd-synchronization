@@ -11,8 +11,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System.Drawing;
+using com.utkaka.Psd.PsdFiles.Layers;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Compression {
+namespace com.utkaka.Psd.PsdFiles.Compression {
 	public static class ImageDataFactory {
 		/// <summary>
 		/// Creates an ImageData object to compress or decompress image data.

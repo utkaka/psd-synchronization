@@ -21,8 +21,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using com.utkaka.Psd.PsdFiles.ImageResources;
+using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	public enum PsdColorMode {
 		Bitmap = 0,
 		Grayscale = 1,
@@ -48,7 +51,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			BaseLayer = new Layer(this);
 			ImageResourceList = new ImageResourceList();
 			Layers = new List<Layer>();
-			AdditionalInfo = new List<LayerInfo>();
+			AdditionalInfo = new List<AbstractLayerInfo>();
 		}
 
 		public PsdFile(string filename, LoadContext loadContext)
@@ -337,7 +340,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 
 		public List<Layer> Layers { get; private set; }
 
-		public List<LayerInfo> AdditionalInfo { get; private set; }
+		public List<AbstractLayerInfo> AdditionalInfo { get; private set; }
 
 		public bool AbsoluteAlpha { get; set; }
 
@@ -363,7 +366,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			foreach (var layerInfo in AdditionalInfo) {
 				switch (layerInfo.Key) {
 					case "LMsk":
-						GlobalLayerMaskData = ((RawLayerInfo) layerInfo).Data;
+						GlobalLayerMaskData = ((RawAbstractLayerInfo) layerInfo).Data;
 						break;
 				}
 			}
@@ -514,15 +517,15 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 		/// Verifies that any Additional Info layers are consistent.
 		/// </summary>
 		private void VerifyInfoLayers() {
-			var infoLayersCount = AdditionalInfo.Count(x => x is InfoLayers);
+			var infoLayersCount = AdditionalInfo.Count(x => x is InfoAbstractLayers);
 			if (infoLayersCount > 1) {
 				throw new PsdInvalidException(
-					$"Cannot have more than one {nameof(InfoLayers)} in a PSD file.");
+					$"Cannot have more than one {nameof(InfoAbstractLayers)} in a PSD file.");
 			}
 
 			if ((infoLayersCount > 0) && (Layers.Count == 0)) {
 				throw new PsdInvalidException(
-					$"{nameof(InfoLayers)} cannot exist when there are 0 layers.");
+					$"{nameof(InfoAbstractLayers)} cannot exist when there are 0 layers.");
 			}
 		}
 
@@ -534,12 +537,12 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			int depth = 0;
 			foreach (var layer in Enumerable.Reverse(Layers)) {
 				var layerSectionInfo = layer.AdditionalInfo.SingleOrDefault(
-					x => x is LayerSectionInfo);
+					x => x is AbstractLayerSectionInfo);
 				if (layerSectionInfo == null) {
 					continue;
 				}
 
-				var sectionInfo = (LayerSectionInfo) layerSectionInfo;
+				var sectionInfo = (AbstractLayerSectionInfo) layerSectionInfo;
 				switch (sectionInfo.SectionType) {
 					case LayerSectionType.Layer:
 						break;
@@ -604,7 +607,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 				// Only one set of Layers can exist in the file.  If layers will be
 				// written to the Additional Info section, then the Layers section
 				// must be empty to avoid conflict.
-				var hasInfoLayers = AdditionalInfo.Exists(x => x is InfoLayers);
+				var hasInfoLayers = AdditionalInfo.Exists(x => x is InfoAbstractLayers);
 				if (!hasInfoLayers) {
 					SaveLayersData(writer);
 				}

@@ -1,5 +1,5 @@
 using System.Drawing;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;

@@ -13,7 +13,7 @@
 using System;
 using System.Linq;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	public class RleRowLengths {
 		public int[] Values { get; private set; }
 

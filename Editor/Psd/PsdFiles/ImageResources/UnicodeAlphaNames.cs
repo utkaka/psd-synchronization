@@ -13,7 +13,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.ImageResources {
 	/// <summary>
 	/// The names of the alpha channels.
 	/// </summary>

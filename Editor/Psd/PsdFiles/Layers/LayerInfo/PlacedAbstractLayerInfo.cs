@@ -1,7 +1,16 @@
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors;
+/////////////////////////////////////////////////////////////////////////////////
+//
+// This software is provided under the MIT License:
+//   Copyright (c) 2022-2023 Anton Alexeyev
+//
+// See LICENSE for complete licensing and attribution information.
+//
+/////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
-	public class PlacedLayerInfo : LayerInfo {
+using com.utkaka.Psd.PsdFiles.Descriptors;
+
+namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+	public class PlacedAbstractLayerInfo : AbstractLayerInfo {
 		public override string Key => "SoLd";
 		public override string Signature => "8BIM";
 		
@@ -10,7 +19,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 		private readonly int _descriptorVersion;
 		private readonly Descriptor _descriptor;
 		
-		public PlacedLayerInfo(PsdBinaryReader reader) {
+		public PlacedAbstractLayerInfo(PsdBinaryReader reader) {
 			_type = reader.ReadAsciiChars(4);
 			_version = reader.ReadInt32();
 			_descriptorVersion = reader.ReadInt32();

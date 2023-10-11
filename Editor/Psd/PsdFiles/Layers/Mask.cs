@@ -17,7 +17,7 @@ using System;
 using System.Collections.Specialized;
 using System.Drawing;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers {
 	public class Mask {
 		/// <summary>
 		/// The layer to which this mask belongs

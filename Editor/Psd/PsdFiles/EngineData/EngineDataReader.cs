@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // This software is provided under the MIT License:
-//   Copyright (c) 2022 Anton Alexeyev
+//   Copyright (c) 2022-2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.EngineData {
+namespace com.utkaka.Psd.PsdFiles.EngineData {
 	public static class EngineDataReader {
 		public static EngineDataObject Read(byte[] stream) {
 			var reader = new Reader();

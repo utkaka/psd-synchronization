@@ -14,8 +14,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System.Text;
+using com.utkaka.Psd.PsdFiles.Layers;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	/// <summary>
 	/// Contains settings and callbacks that affect the loading of a PSD file.
 	/// </summary>

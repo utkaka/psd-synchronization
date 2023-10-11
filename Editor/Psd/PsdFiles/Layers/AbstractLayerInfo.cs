@@ -5,17 +5,19 @@
 // This software is provided under the MIT License:
 //   Copyright (c) 2006-2007 Frank Blumenberg
 //   Copyright (c) 2010-2020 Tao Yue
+//   Copyright (c) 2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
 /////////////////////////////////////////////////////////////////////////////////
 
 using System.Collections.Generic;
+using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers {
 	internal static class LayerInfoFactory {
 		internal static void LoadAll(PsdBinaryReader reader, PsdFile psdFile,
-			List<LayerInfo> layerInfoList, long endPosition, bool globalLayerInfo) {
+			List<AbstractLayerInfo> layerInfoList, long endPosition, bool globalLayerInfo) {
 			// LayerInfo has a 12-byte minimum length.  Anything shorter should be
 			// ignored as padding.
 			while (endPosition - reader.BaseStream.Position >= 12) {
@@ -41,7 +43,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 		///   false if it is being loaded from the end of a Layer record.</param>
 		/// <returns>LayerInfo object if it was successfully read, or null if
 		///   padding was found.</returns>
-		private static LayerInfo Load(PsdBinaryReader reader, PsdFile psdFile,
+		private static AbstractLayerInfo Load(PsdBinaryReader reader, PsdFile psdFile,
 			bool globalLayerInfo) {
 			Util.DebugMessage(reader.BaseStream, "Load, Begin, LayerInfo");
 
@@ -49,7 +51,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 			var signature = reader.ReadAsciiChars(4);
 			if ((signature != "8BIM") && (signature != "8B64")) {
 				throw new PsdInvalidException(
-					$"{nameof(LayerInfo)} signature invalid, must be 8BIM or 8B64.");
+					$"{nameof(AbstractLayerInfo)} signature invalid, must be 8BIM or 8B64.");
 			}
 
 			var key = reader.ReadAsciiChars(4);
@@ -58,25 +60,25 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 				? reader.ReadInt64()
 				: reader.ReadInt32();
 			var startPosition = reader.BaseStream.Position;
-			LayerInfo result;
+			AbstractLayerInfo result;
 			switch (key) {
 				case "Layr":
 				case "Lr16":
 				case "Lr32":
-					result = new InfoLayers(reader, psdFile, key, length);
+					result = new InfoAbstractLayers(reader, psdFile, key, length);
 					break;
 				case "lsct":
 				case "lsdk":
-					result = new LayerSectionInfo(reader, key, (int) length);
+					result = new AbstractLayerSectionInfo(reader, key, (int) length);
 					break;
 				case "luni":
-					result = new LayerUnicodeName(reader);
+					result = new AbstractLayerUnicodeName(reader);
 					break;
 				case "TySh":
 					result = new TypeToolInfo(reader);
 					break;
 				case "SoLd":
-					result = new PlacedLayerInfo(reader);
+					result = new PlacedAbstractLayerInfo(reader);
 					break;
 				case "lnkD":
 				case "lnkE":
@@ -85,7 +87,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 					result = new LinkedFilesInfo(key, reader, length);
 					break;
 				default:
-					result = new RawLayerInfo(reader, signature, key, length);
+					result = new RawAbstractLayerInfo(reader, signature, key, length);
 					break;
 			}
 
@@ -151,7 +153,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 		}
 	}
 
-	public abstract class LayerInfo {
+	public abstract class AbstractLayerInfo {
 		public abstract string Signature { get; }
 
 		public abstract string Key { get; }

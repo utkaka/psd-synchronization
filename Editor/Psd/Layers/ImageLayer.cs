@@ -1,10 +1,11 @@
 using com.utkaka.Psd.ImageProcessing.Decoding;
 using com.utkaka.Psd.ImageProcessing.Encoding;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.PsdFiles;
+using com.utkaka.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using UnityEngine;
 
-namespace com.utkaka.PsdPlugin.Layers {
+namespace com.utkaka.Psd.Layers {
 	public class ImageLayer : AbstractLayer {
 		private NativeArray<Color32> _pixels;
 		public NativeArray<Color32> Pixels => _pixels;

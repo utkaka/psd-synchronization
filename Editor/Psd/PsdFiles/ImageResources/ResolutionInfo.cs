@@ -15,7 +15,7 @@
 
 using System;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.ImageResources {
 	/// <summary>
 	/// Summary description for ResolutionInfo.
 	/// </summary>

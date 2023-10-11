@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Drawing;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.PsdFiles;
+using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
 
-namespace com.utkaka.PsdPlugin.Layers {
+namespace com.utkaka.Psd.Layers {
 	public class GroupLayer : AbstractLayer {
 		public List<AbstractLayer> ChildLayer { get; }
 
@@ -12,7 +14,7 @@ namespace com.utkaka.PsdPlugin.Layers {
 
 		protected override Layer ToPsdLayer(PsdFile psdFile) {
 			var psdLayer = base.ToPsdLayer(psdFile);
-			var sectionInfo = new LayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.ClosedFolder);
+			var sectionInfo = new AbstractLayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.ClosedFolder);
 			psdLayer.AdditionalInfo.Add(sectionInfo);
 			return psdLayer;
 		}
@@ -30,7 +32,7 @@ namespace com.utkaka.PsdPlugin.Layers {
 			endSectionLayer.Visible = true;
 			endSectionLayer.Masks = new MaskInfo();
 			endSectionLayer.BlendingRangesData = new BlendingRanges(endSectionLayer);
-			var sectionInfo = new LayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.SectionDivider);
+			var sectionInfo = new AbstractLayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.SectionDivider);
 			endSectionLayer.AdditionalInfo.Add(sectionInfo);
 			psdFile.Layers.Add(endSectionLayer);
 		}

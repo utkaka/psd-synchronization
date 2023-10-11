@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using com.utkaka.PsdPlugin.Layers;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.Layers;
+using com.utkaka.Psd.PsdFiles;
+using com.utkaka.Psd.PsdFiles.ImageResources;
 
 namespace com.utkaka.Psd {
 	public class Document {

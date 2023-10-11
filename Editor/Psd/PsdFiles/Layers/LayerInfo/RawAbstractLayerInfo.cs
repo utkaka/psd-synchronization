@@ -12,9 +12,9 @@
 
 using System.Diagnostics;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 	[DebuggerDisplay("Layer Info: { key }")]
-	public class RawLayerInfo : LayerInfo {
+	public class RawAbstractLayerInfo : AbstractLayerInfo {
 		private string signature;
 		public override string Signature => signature;
 
@@ -23,12 +23,12 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 
 		public byte[] Data { get; private set; }
 
-		public RawLayerInfo(string key, string signature = "8BIM") {
+		public RawAbstractLayerInfo(string key, string signature = "8BIM") {
 			this.signature = signature;
 			this.key = key;
 		}
 
-		public RawLayerInfo(PsdBinaryReader reader, string signature, string key,
+		public RawAbstractLayerInfo(PsdBinaryReader reader, string signature, string key,
 			long dataLength) {
 			this.signature = signature;
 			this.key = key;

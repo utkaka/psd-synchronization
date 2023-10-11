@@ -1,15 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // This software is provided under the MIT License:
-//   Copyright (c) 2022 Anton Alexeyev
+//   Copyright (c) 2022-2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors.Elements.ReferenceElements;
+using com.utkaka.Psd.PsdFiles.Descriptors.Elements.ReferenceElements;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
 	public class ReferenceElement : AbstractDescriptorElement {
 		public const string OSType = "obj";
 		

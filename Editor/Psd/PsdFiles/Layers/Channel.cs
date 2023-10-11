@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using com.utkaka.PsdPlugin.PsdFiles.Compression;
+using com.utkaka.Psd.PsdFiles.Compression;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers {
 	// ChannelList is exposed as an ICollection so that it cannot be accidentally
 	// indexed by ID.
 	public interface IChannelList : ICollection<Channel> {

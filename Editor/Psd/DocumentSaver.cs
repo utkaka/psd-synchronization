@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Text;
 using com.utkaka.Psd.ImageProcessing.Encoding;
-using com.utkaka.PsdPlugin.PsdFiles;
+using com.utkaka.Psd.PsdFiles;
+using com.utkaka.Psd.PsdFiles.Layers;
 
 namespace com.utkaka.Psd {
 	public static class DocumentSaver {

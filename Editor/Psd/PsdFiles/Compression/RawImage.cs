@@ -13,7 +13,7 @@
 using System;
 using System.Drawing;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Compression {
+namespace com.utkaka.Psd.PsdFiles.Compression {
 	internal class RawImage : ImageData {
 		private byte[] data;
 

@@ -1,17 +1,17 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // This software is provided under the MIT License:
-//   Copyright (c) 2022 Anton Alexeyev
+//   Copyright (c) 2022-2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors;
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors.Elements;
-using com.utkaka.PsdPlugin.PsdFiles.EngineData;
+using com.utkaka.Psd.PsdFiles.Descriptors;
+using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
+using com.utkaka.Psd.PsdFiles.EngineData;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 	public struct TypeToolMatrix {
 		public double XX;
 		public double XY;
@@ -20,7 +20,7 @@ namespace com.utkaka.PsdPlugin.PsdFiles {
 		public double TX;
 		public double TY;
 	}
-	public class TypeToolInfo : LayerInfo {
+	public class TypeToolInfo : AbstractLayerInfo {
 		public override string Key => "TySh";
 		public override string Signature => "8BIM";
 		

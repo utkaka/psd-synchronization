@@ -16,9 +16,10 @@
 
 using System;
 using System.Collections.Generic;
+using com.utkaka.Psd.PsdFiles.ImageResources;
 using static System.FormattableString;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	public enum ResourceID {
 		Undefined = 0,
 		MacPrintInfo = 1001,

@@ -1,13 +1,13 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // This software is provided under the MIT License:
-//   Copyright (c) 2022 Anton Alexeyev
+//   Copyright (c) 2022-2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.PsdPlugin.PsdFiles.EngineData {
+namespace com.utkaka.Psd.PsdFiles.EngineData {
 	public class Constants {
 		public const int LineFeed = 10;
 		public const int Tab = 9;

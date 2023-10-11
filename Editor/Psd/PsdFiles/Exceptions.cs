@@ -12,7 +12,7 @@
 
 using System;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles {
 	[Serializable]
 	public class PsdInvalidException : Exception {
 		public PsdInvalidException() { }

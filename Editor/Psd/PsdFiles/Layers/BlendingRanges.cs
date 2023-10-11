@@ -15,7 +15,7 @@
 
 using System;
 
-namespace com.utkaka.PsdPlugin.PsdFiles {
+namespace com.utkaka.Psd.PsdFiles.Layers {
 	public class BlendingRanges {
 		/// <summary>
 		/// The layer to which this channel belongs

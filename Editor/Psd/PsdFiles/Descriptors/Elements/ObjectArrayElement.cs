@@ -1,6 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//
+// This software is provided under the MIT License:
+//   Copyright (c) 2022-2023 Anton Alexeyev
+//
+// See LICENSE for complete licensing and attribution information.
+//
+/////////////////////////////////////////////////////////////////////////////////
+
 using System.Collections.Generic;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
 	public class ObjectArrayItem {
 		private readonly string _key;
 		private readonly string _type;

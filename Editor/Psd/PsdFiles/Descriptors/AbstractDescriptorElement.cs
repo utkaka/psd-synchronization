@@ -1,16 +1,16 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // This software is provided under the MIT License:
-//   Copyright (c) 2022 Anton Alexeyev
+//   Copyright (c) 2022-2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
 /////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using com.utkaka.PsdPlugin.PsdFiles.Descriptors.Elements;
+using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
 
-namespace com.utkaka.PsdPlugin.PsdFiles.Descriptors {
+namespace com.utkaka.Psd.PsdFiles.Descriptors {
 	public abstract class AbstractDescriptorElement {
 		protected abstract string ElementType { get; }
 
