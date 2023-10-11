@@ -1,0 +1,18 @@
+{
+  "name": "com.utkaka.psd-synchronization",
+  "version": "0.0.1",
+  "displayName": "PSD synchronization",
+  "description": "Package for bidirectional PSD synchronization",
+  "unity": "2019.3",
+  "unityRelease": "1f1",
+  "dependencies": {
+    "com.unity.mathematics": "1.0.1",
+    "com.unity.burst": "1.6.0",
+    "com.unity.textmeshpro": "3.0.6"
+  },
+  "author": {
+    "name": "Anton Alexeyev",
+    "email": "alexeyev.anton@gmail.com"
+  },
+  "license": "MIT"
+}
