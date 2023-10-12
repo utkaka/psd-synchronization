@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
 
@@ -149,7 +150,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 		/// The width of the image in pixels. 
 		/// </summary>
 		public int ColumnCount {
-			get => this.BaseLayer.Rect.Width;
+			get => BaseLayer.Rect.Width;
 			set {
 				CheckDimension(value);
 				BaseLayer.Rect = new Rectangle(0, 0, value, BaseLayer.Rect.Height);

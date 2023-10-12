@@ -18,6 +18,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {

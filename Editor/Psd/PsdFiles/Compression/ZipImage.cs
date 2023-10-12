@@ -14,6 +14,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression {
 	public class ZipImage : ImageData {

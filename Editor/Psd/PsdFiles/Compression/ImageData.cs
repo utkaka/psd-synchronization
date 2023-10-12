@@ -12,6 +12,7 @@
 
 using System;
 using System.Drawing;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression {
 	public abstract class ImageData {

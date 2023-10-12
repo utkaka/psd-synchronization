@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using com.utkaka.PsdSynchronization.Editor.Psd.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -52,7 +48,7 @@ namespace com.utkaka.PsdSynchronization.Editor {
 			Close();
 		}
 		
-		private void ProcessLayers(Transform parent, List<AbstractLayer> layers) {
+		/*private void ProcessLayers(Transform parent, List<AbstractLayer> layers) {
 			for (var i = layers.Count - 1; i >= 0; i--) {
 				var layer = layers[i];
 				if (layer is TextLayer textLayer) {
@@ -91,6 +87,6 @@ namespace com.utkaka.PsdSynchronization.Editor {
 				new Rect(0.0f, 0.0f, layer.Rectangle.width, layer.Rectangle.height), Vector2.one * 0.5f);
 			testImage.sprite = sprite;
 			testImage.color = new Color(1.0f, 1.0f, 1.0f, layer.Opacity); 
-		}
+		}*/
 	}
 }

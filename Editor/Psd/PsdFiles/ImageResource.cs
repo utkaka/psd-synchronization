@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static System.FormattableString;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
@@ -105,28 +107,28 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	/// <summary>
 	/// Abstract class for Image Resources
 	/// </summary>
+	[Serializable]
 	public abstract class ImageResource {
-		private string signature;
-
+		[SerializeField]
+		private string _name;
+		[SerializeField]
+		private string _signature;
+		
+		public abstract ResourceID ID { get; }
+		public string Name => _name;
 		public string Signature {
-			get => signature;
+			get => _signature;
 			set {
 				if (value.Length != 4) {
-					throw new ArgumentException(
-						$"{nameof(Signature)} must be 4 characters in length.");
+					throw new ArgumentException($"{nameof(Signature)} must be 4 characters in length.");
 				}
-
-				signature = value;
+				_signature = value;
 			}
 		}
 
-		public string Name { get; set; }
-
-		public abstract ResourceID ID { get; }
-
 		protected ImageResource(string name) {
-			Signature = "8BIM";
-			Name = name;
+			_signature = "8BIM";
+			_name = name;
 		}
 
 		/// <summary>
@@ -137,6 +139,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 
 			writer.WriteAsciiChars(Signature);
 			writer.Write((UInt16) ID);
+			if (Name == null) _name = string.Empty;
 			writer.WritePascalString(Name, 2);
 
 			// Length is unpadded, but data is even-padded
@@ -155,8 +158,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 		/// </summary>
 		protected abstract void WriteData(PsdBinaryWriter writer);
 
-		public override string ToString() =>
-			Invariant($"{ID} {Name}");
+		public override string ToString() => Invariant($"{ID} {Name}");
 	}
 
 	/// <summary>

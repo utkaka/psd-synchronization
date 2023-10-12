@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers {

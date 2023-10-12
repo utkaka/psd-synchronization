@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
 

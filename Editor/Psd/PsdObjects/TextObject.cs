@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
@@ -7,23 +9,29 @@ using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 using UnityEngine;
 
-namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
-	public class TextLayer : ImageLayer {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
+	[Serializable]
+	public class TextObject : AbstractPsdObject {
+		[SerializeField]
+		private ImageObject _imageObject;
+		[SerializeField]
 		private string _text;
+		[SerializeField]
 		private Matrix4x4 _matrix;
+		[SerializeField]
 		private Rect _textRect;
+		//TODO: Parse And Serialize EngineData
 		private EngineDataObject _engineData;
 		private readonly TypeToolMatrix _matrixValues;
 		private readonly Descriptor _textDescriptor;
 		private readonly Descriptor _warpDescriptor;
 
-		public string Text => _text;
-
-		public Matrix4x4 Matrix => _matrix;
-
-		public Rect TextRect => _textRect;
-
-		public TextLayer(Layer psdFileLayer, GroupLayer parentLayer, TypeToolInfo typeToolInfo) : base(psdFileLayer, parentLayer) {
+		public TextObject(Layer psdFileLayer, GroupObject parentObject) : base(psdFileLayer, parentObject) {
+			_imageObject = new ImageObject(psdFileLayer, parentObject);
+			var typeToolInfo = psdFileLayer.AdditionalInfo.FirstOrDefault(i => i is TypeToolInfo) as TypeToolInfo;
+			if (typeToolInfo == null) {
+				throw new ArgumentException("There is no TypeToolInfo for this TextObject");
+			}
 			_engineData = typeToolInfo.EngineData;
 			_textDescriptor = typeToolInfo.TextDescriptor;
 			_warpDescriptor = typeToolInfo.WarpDescriptor;
@@ -45,7 +53,12 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
 
 			_textRect = _textRect.ConvertToUnitySpace(psdFileLayer.PsdFile.ColumnCount, psdFileLayer.PsdFile.RowCount);
 		}
-		
+
+		public override void SaveAssets(string path) {
+			base.SaveAssets(path);
+			_imageObject.SaveAssets(path);
+		}
+
 		protected override Layer ToPsdLayer(PsdFile psdFile) {
 			var psdLayer = base.ToPsdLayer(psdFile);
 			_engineData["ResourceDict"]["KinsokuSet"] = new EngineDataObject(new List<EngineDataObject>());

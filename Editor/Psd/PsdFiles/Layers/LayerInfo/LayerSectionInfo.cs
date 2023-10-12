@@ -5,6 +5,7 @@
 // This software is provided under the MIT License:
 //   Copyright (c) 2006-2007 Frank Blumenberg
 //   Copyright (c) 2010-2020 Tao Yue
+//   Copyright (c) 2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
@@ -57,8 +58,8 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 			}
 		}
 
-		public LayerSectionInfo(string key, LayerSectionSubtype? subtype, LayerSectionType sectionType) {
-			this.key = key;
+		public LayerSectionInfo(LayerSectionSubtype? subtype, LayerSectionType sectionType) {
+			key = "lsct";
 			this.subtype = subtype;
 			SectionType = sectionType;
 		}

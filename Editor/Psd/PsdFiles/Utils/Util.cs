@@ -5,6 +5,7 @@
 // This software is provided under the MIT License:
 //   Copyright (c) 2006-2007 Frank Blumenberg
 //   Copyright (c) 2010-2020 Tao Yue
+//   Copyright (c) 2023 Anton Alexeyev
 //
 // See LICENSE for complete licensing and attribution information.
 //
@@ -13,9 +14,8 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 
-namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils {
 	public static class Util {
 		[DebuggerDisplay("Top = {Top}, Bottom = {Bottom}, Left = {Left}, Right = {Right}")]
 		public struct RectanglePosition {
@@ -290,47 +290,5 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 		public static void DebugMessage(Stream stream, string message) {
 			Debug.WriteLine($"0x{stream.Position:x}, {stream.Position}, {message}");
 		}*/
-	}
-
-	/// <summary>
-	/// Fixed-point decimal, with 16-bit integer and 16-bit fraction.
-	/// </summary>
-	public class UFixed16_16 {
-		public UInt16 Integer { get; set; }
-		public UInt16 Fraction { get; set; }
-
-		public UFixed16_16(UInt16 integer, UInt16 fraction) {
-			Integer = integer;
-			Fraction = fraction;
-		}
-
-		/// <summary>
-		/// Split the high and low words of a 32-bit unsigned integer into a
-		/// fixed-point number.
-		/// </summary>
-		public UFixed16_16(UInt32 value) {
-			Integer = (UInt16) (value >> 16);
-			Fraction = (UInt16) (value & 0x0000ffff);
-		}
-
-		public UFixed16_16(double value) {
-			if (value >= 65536.0) {
-				throw new OverflowException();
-			}
-
-			if (value < 0) {
-				throw new OverflowException();
-			}
-
-			Integer = (UInt16) value;
-
-			// Round instead of truncate, because doubles may not represent the
-			// fraction exactly.
-			Fraction = (UInt16) ((value - Integer) * 65536 + 0.5);
-		}
-
-		public static implicit operator double(UFixed16_16 value) {
-			return (double) value.Integer + value.Fraction / 65536.0;
-		}
 	}
 }

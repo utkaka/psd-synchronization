@@ -1,19 +1,29 @@
+using System;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 
-namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
-	public class ImageLayer : AbstractLayer {
-		private NativeArray<Color32> _pixels;
-		public NativeArray<Color32> Pixels => _pixels;
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
+	[Serializable]
+	public class ImageObject : AbstractPsdObject {
 
-		public ImageLayer(Layer psdFileLayer, GroupLayer parentLayer) : base(psdFileLayer, parentLayer){
+		private JobHandle _jobHandle;
+		private NativeArray<Color32> _pixels;
+		
+		public ImageObject(Layer psdFileLayer, GroupObject parentObject) : base(psdFileLayer, parentObject){
 			psdFileLayer.CreateMissingChannels();
-			_pixels = new NativeArray<Color32>(psdFileLayer.Rect.Width * psdFileLayer.Rect.Height, Allocator.Persistent);
-			ImageDecoder.DecodeImage(this, psdFileLayer).Complete();
+			_pixels = new NativeArray<Color32>(psdFileLayer.Rect.Width * psdFileLayer.Rect.Height, Allocator.TempJob);
+			_jobHandle = ImageDecoder.DecodeImage(psdFileLayer, _pixels);
+		}
+
+		public override void SaveAssets(string path) {
+			_jobHandle.Complete();
+			//TODO: Save sprite
+			_pixels.Dispose();
 		}
 		
 		protected override Layer ToPsdLayer(PsdFile psdFile) {
@@ -29,14 +39,9 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
 
 			// Store and compress channel image data
 			var channelsArray = psdLayer.Channels.ToIdArray();
-			ImageEncoder.EncodeImage(channelsArray, psdLayer.AlphaChannel, Pixels, psdLayer.Rect);
+			//TODO: Fix encoding
+			//ImageEncoder.EncodeImage(channelsArray, psdLayer.AlphaChannel, Pixels, psdLayer.Rect);
 			return psdLayer;
-		}
-
-		public override void Dispose() {
-			if (_pixels.IsCreated) {
-				_pixels.Dispose();
-			}
 		}
 	}
 }

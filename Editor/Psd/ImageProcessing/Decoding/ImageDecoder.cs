@@ -2,9 +2,9 @@ using System;
 using System.Drawing;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor32;
-using com.utkaka.PsdSynchronization.Editor.Psd.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -12,16 +12,16 @@ using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding {
 	public static class ImageDecoder {
-		public static JobHandle DecodeImage(ImageLayer layer, Layer psdLayer, JobHandle inputDependencies = default(JobHandle)) {
+		public static JobHandle DecodeImage(Layer psdLayer, NativeArray<Color32> pixels, JobHandle inputDependencies = default(JobHandle)) {
 			var byteDepth = Util.BytesFromBitDepth(psdLayer.PsdFile.BitDepth);
 			var jobCount = Unity.Jobs.LowLevel.Unsafe.JobsUtility.JobWorkerMaximumCount;
-			var execCount = layer.Pixels.Length;
+			var execCount = pixels.Length;
 			var sliceCount = execCount / jobCount;
 			if (byteDepth == 4) {
-				return Decode32(psdLayer.PsdFile.ColorMode, layer.Pixels, psdLayer.Channels.ToIdArray(),
+				return Decode32(psdLayer.PsdFile.ColorMode, pixels, psdLayer.Channels.ToIdArray(),
 					psdLayer.AlphaChannel, psdLayer.Masks, psdLayer.Rect, execCount, sliceCount, inputDependencies);
 			} else {
-				return Decode(psdLayer.PsdFile.ColorMode, psdLayer.PsdFile.ColorModeData, byteDepth, layer.Pixels, psdLayer.Channels.ToIdArray(),
+				return Decode(psdLayer.PsdFile.ColorMode, psdLayer.PsdFile.ColorModeData, byteDepth, pixels, psdLayer.Channels.ToIdArray(),
 					psdLayer.AlphaChannel, psdLayer.Masks, psdLayer.Rect, execCount, sliceCount, inputDependencies);
 			}
 		}

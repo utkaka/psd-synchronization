@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System.Diagnostics;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 	[DebuggerDisplay("Layer Info: { key }")]

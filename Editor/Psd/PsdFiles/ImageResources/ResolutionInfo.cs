@@ -5,6 +5,7 @@
 // This software is provided under the MIT License:
 //   Copyright (c) 2006-2007 Frank Blumenberg
 //   Copyright (c) 2010-2017 Tao Yue
+//   Copyright (c) 2023 Anton Alexeyev
 //
 // Portions of this file are provided under the BSD 3-clause License:
 //   Copyright (c) 2006, Jonas Beckeman
@@ -14,24 +15,15 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
+using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources {
 	/// <summary>
 	/// Summary description for ResolutionInfo.
 	/// </summary>
+	[Serializable]
 	public class ResolutionInfo : ImageResource {
-		public override ResourceID ID => ResourceID.ResolutionInfo;
-
-		/// <summary>
-		/// Horizontal DPI.
-		/// </summary>
-		public UFixed16_16 HDpi { get; set; }
-
-		/// <summary>
-		/// Vertical DPI.
-		/// </summary>
-		public UFixed16_16 VDpi { get; set; }
-
 		/// <summary>
 		/// 1 = pixels per inch, 2 = pixels per centimeter
 		/// </summary>
@@ -39,19 +31,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources {
 			PxPerInch = 1,
 			PxPerCm = 2
 		}
-
-		/// <summary>
-		/// Display units for horizontal resolution.  This only affects the
-		/// user interface; the resolution is still stored in the PSD file
-		/// as pixels/inch.
-		/// </summary>
-		public ResUnit HResDisplayUnit { get; set; }
-
-		/// <summary>
-		/// Display units for vertical resolution.
-		/// </summary>
-		public ResUnit VResDisplayUnit { get; set; }
-
+		
 		/// <summary>
 		/// Physical units.
 		/// </summary>
@@ -62,22 +42,54 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources {
 			Picas = 4,
 			Columns = 5
 		}
+		
+		[SerializeField]
+		private UFixed1616 _hDpi;
+		[SerializeField]
+		private UFixed1616 _vDpi;
+		[SerializeField]
+		private ResUnit _hResDisplayUnit;
+		[SerializeField]
+		private ResUnit _vResDisplayUnit;
+		[SerializeField]
+		private Unit _widthDisplayUnit;
+		[SerializeField]
+		private Unit _heightDisplayUnit;
+		
+		public override ResourceID ID => ResourceID.ResolutionInfo;
 
-		public Unit WidthDisplayUnit { get; set; }
+		/// <summary>
+		/// Horizontal DPI.
+		/// </summary>
+		public UFixed1616 HDpi => _hDpi;
 
-		public Unit HeightDisplayUnit { get; set; }
+		/// <summary>
+		/// Vertical DPI.
+		/// </summary>
+		public UFixed1616 VDpi => _vDpi;
 
-		public ResolutionInfo() : base(String.Empty) { }
+		/// <summary>
+		/// Display units for horizontal resolution.  This only affects the
+		/// user interface; the resolution is still stored in the PSD file
+		/// as pixels/inch.
+		/// </summary>
+		public ResUnit HResDisplayUnit => _hResDisplayUnit;
+
+		/// <summary>
+		/// Display units for vertical resolution.
+		/// </summary>
+		public ResUnit VResDisplayUnit => _vResDisplayUnit;
+		public Unit WidthDisplayUnit => _widthDisplayUnit;
+		public Unit HeightDisplayUnit => _heightDisplayUnit;
 
 		public ResolutionInfo(PsdBinaryReader reader, string name)
 			: base(name) {
-			this.HDpi = new UFixed16_16(reader.ReadUInt32());
-			this.HResDisplayUnit = (ResUnit) reader.ReadInt16();
-			this.WidthDisplayUnit = (Unit) reader.ReadInt16();
-
-			this.VDpi = new UFixed16_16(reader.ReadUInt32());
-			this.VResDisplayUnit = (ResUnit) reader.ReadInt16();
-			this.HeightDisplayUnit = (Unit) reader.ReadInt16();
+			_hDpi = new UFixed1616(reader.ReadUInt32());
+			_hResDisplayUnit = (ResUnit) reader.ReadInt16();
+			_widthDisplayUnit = (Unit) reader.ReadInt16();
+			_vDpi = new UFixed1616(reader.ReadUInt32());
+			_vResDisplayUnit = (ResUnit) reader.ReadInt16();
+			_heightDisplayUnit = (Unit) reader.ReadInt16();
 		}
 
 		protected override void WriteData(PsdBinaryWriter writer) {

@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	public class RleWriter {
