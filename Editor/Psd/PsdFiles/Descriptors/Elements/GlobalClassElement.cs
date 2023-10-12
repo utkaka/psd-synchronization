@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class GlobalClassElement : ClassElement {
 		public const string OSType = "GlbC";
 		protected override string ElementType => OSType;

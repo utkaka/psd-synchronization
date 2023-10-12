@@ -5,6 +5,7 @@
 // This software is provided under the MIT License:
 //   Copyright (c) 2006-2007 Frank Blumenberg
 //   Copyright (c) 2010-2021 Tao Yue
+//   Copyright (c) 2023 Anton Alexeyev
 //
 // Portions of this file are provided under the BSD 3-clause License:
 //   Copyright (c) 2006, Jonas Beckeman
@@ -19,9 +20,10 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
+using UnityEngine;
 
-namespace com.utkaka.Psd.PsdFiles.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers {
 	[DebuggerDisplay("Name = {Name}")]
 	public class Layer {
 		internal PsdFile PsdFile { get; private set; }
@@ -111,7 +113,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 
 		internal Layer(PsdBinaryReader reader, PsdFile psdFile)
 			: this(psdFile) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, Layer");
+			reader.Log(LogType.Log, "Load, Begin, Layer");
 
 			Rect = reader.ReadRectangle();
 
@@ -155,9 +157,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 				}
 			}
 
-			Util.DebugMessage(reader.BaseStream, $"Load, End, Layer, {Name}");
-
-			PsdFile.LoadContext.OnLoadLayerHeader(this);
+			reader.Log(LogType.Log, $"Load, End, Layer, {Name}");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -212,7 +212,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 		}
 
 		public void Save(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Layer");
+			writer.Log(LogType.Log, "Save, Begin, Layer");
 
 			writer.Write(Rect);
 
@@ -252,7 +252,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 				}
 			}
 
-			Util.DebugMessage(writer.BaseStream, $"Save, End, Layer, {Name}");
+			writer.Log(LogType.Log, $"Save, End, Layer, {Name}");
 		}
 	}
 }

@@ -1,9 +1,9 @@
 using System;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using UnityEngine;
 
-namespace com.utkaka.Psd.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
 	public abstract class AbstractLayer : IDisposable {
 		private float _opacity;
 		public GroupLayer ParentLayer { get; set; }

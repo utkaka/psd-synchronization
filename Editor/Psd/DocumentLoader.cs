@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
-using com.utkaka.Psd.Layers;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.ImageResources;
-using com.utkaka.Psd.PsdFiles.Layers;
-using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 
-namespace com.utkaka.Psd {
+namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	public static class DocumentLoader {
 		public static Document Load(System.IO.Stream input) {
-			var psdFile = new PsdFile(input, new LoadContext());
+			var psdFile = new PsdFile(input, new Context());
 
 			// Multichannel images are loaded by processing each channel as a
 			// grayscale layer.

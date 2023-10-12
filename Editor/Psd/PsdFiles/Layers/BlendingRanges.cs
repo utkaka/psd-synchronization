@@ -14,8 +14,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using UnityEngine;
 
-namespace com.utkaka.Psd.PsdFiles.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers {
 	public class BlendingRanges {
 		/// <summary>
 		/// The layer to which this channel belongs
@@ -34,7 +35,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 		///////////////////////////////////////////////////////////////////////////
 
 		public BlendingRanges(PsdBinaryReader reader, Layer layer) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, BlendingRanges");
+			reader.Log(LogType.Log, "Load, Begin, BlendingRanges");
 
 			Layer = layer;
 			var dataLength = reader.ReadInt32();
@@ -44,13 +45,13 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 
 			Data = reader.ReadBytes(dataLength);
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, BlendingRanges");
+			reader.Log(LogType.Log, "Load, End, BlendingRanges");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void Save(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, BlendingRanges");
+			writer.Log(LogType.Log, "Save, Begin, BlendingRanges");
 
 			if (Data == null) {
 				writer.Write((UInt32) 0);
@@ -60,7 +61,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 			writer.Write((UInt32) Data.Length);
 			writer.Write(Data);
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, BlendingRanges");
+			writer.Log(LogType.Log, "Save, End, BlendingRanges");
 		}
 	}
 }

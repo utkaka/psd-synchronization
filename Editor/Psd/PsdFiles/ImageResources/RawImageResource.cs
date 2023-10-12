@@ -10,7 +10,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.ImageResources {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources {
 	/// <summary>
 	/// Stores the raw data for unimplemented image resource types.
 	/// </summary>

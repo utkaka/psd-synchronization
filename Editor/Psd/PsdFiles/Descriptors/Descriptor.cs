@@ -9,7 +9,7 @@
 
 using System.Collections.Generic;
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors {
 	public class Descriptor {
 		private readonly string _classIdName;
 		private readonly string _classId;

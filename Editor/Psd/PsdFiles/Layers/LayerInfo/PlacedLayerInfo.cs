@@ -7,9 +7,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-using com.utkaka.Psd.PsdFiles.Descriptors;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
 
-namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 	public class PlacedLayerInfo : AbstractLayerInfo {
 		public override string Key => "SoLd";
 		public override string Signature => "8BIM";

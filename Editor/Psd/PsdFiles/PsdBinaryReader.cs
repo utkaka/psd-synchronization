@@ -18,41 +18,45 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	/// <summary>
 	/// Reads PSD data types in big-endian byte order.
 	/// </summary>
 	public class PsdBinaryReader : IDisposable {
-		private BinaryReader reader;
-		private Encoding encoding;
+		private BinaryReader _reader;
+		private Context _context;
 
-		public Stream BaseStream => reader.BaseStream;
+		public Stream BaseStream => _reader.BaseStream;
 
 		public PsdBinaryReader(Stream stream, PsdBinaryReader reader)
-			: this(stream, reader.encoding) { }
+			: this(stream, reader._context) { }
 
-		public PsdBinaryReader(Stream stream, Encoding encoding) {
-			this.encoding = encoding;
-
+		public PsdBinaryReader(Stream stream, Context context) {
 			// ReadPascalString and ReadUnicodeString handle encoding explicitly.
 			// BinaryReader.ReadString() is never called, so it is constructed with
 			// ASCII encoding to make accidental usage obvious.
-			reader = new BinaryReader(stream, Encoding.ASCII);
+			_reader = new BinaryReader(stream, Encoding.ASCII);
+			_context = context;
+		}
+		
+		public void Log(LogType logType, string message) {
+			_context.Logger.Log(logType, $"PsdBinaryReader: 0x{BaseStream.Position:x}, {BaseStream.Position}, {message}");
 		}
 
 		public byte ReadByte() {
-			return reader.ReadByte();
+			return _reader.ReadByte();
 		}
 
 		public byte[] ReadBytes(int count) {
-			return reader.ReadBytes(count);
+			return _reader.ReadBytes(count);
 		}
 		
 		public byte[] ReadBytes(long count) {
 			var result = new byte[count];
 			for (var i = 0L; i < count; i++) {
-				result[i] = reader.ReadByte();
+				result[i] = _reader.ReadByte();
 			}
 			return result;
 		}
@@ -60,17 +64,17 @@ namespace com.utkaka.Psd.PsdFiles {
 		public byte[] ReadBytes(ulong count) {
 			var result = new byte[count];
 			for (var i = 0UL; i < count; i++) {
-				result[i] = reader.ReadByte();
+				result[i] = _reader.ReadByte();
 			}
 			return result;
 		}
 
 		public bool ReadBoolean() {
-			return reader.ReadBoolean();
+			return _reader.ReadBoolean();
 		}
 
 		public Int16 ReadInt16() {
-			var val = reader.ReadInt16();
+			var val = _reader.ReadInt16();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 2);
 			}
@@ -79,7 +83,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 
 		public Int32 ReadInt32() {
-			var val = reader.ReadInt32();
+			var val = _reader.ReadInt32();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 4);
 			}
@@ -88,7 +92,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 
 		public Int64 ReadInt64() {
-			var val = reader.ReadInt64();
+			var val = _reader.ReadInt64();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 8);
 			}
@@ -97,7 +101,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 
 		public UInt16 ReadUInt16() {
-			var val = reader.ReadUInt16();
+			var val = _reader.ReadUInt16();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 2);
 			}
@@ -106,7 +110,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 
 		public UInt32 ReadUInt32() {
-			var val = reader.ReadUInt32();
+			var val = _reader.ReadUInt32();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 4);
 			}
@@ -115,7 +119,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 
 		public UInt64 ReadUInt64() {
-			var val = reader.ReadUInt64();
+			var val = _reader.ReadUInt64();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 8);
 			}
@@ -124,7 +128,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 		
 		public double ReadDouble() {
-			var val = reader.ReadDouble();
+			var val = _reader.ReadDouble();
 			unsafe {
 				Util.SwapBytes((byte*) &val, 8);
 			}
@@ -140,7 +144,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// <param name="padMultiple">Byte multiple that the block is padded to.</param>
 		public void ReadPadding(long startPosition, int padMultiple) {
 			// Pad to specified byte multiple
-			var totalLength = reader.BaseStream.Position - startPosition;
+			var totalLength = _reader.BaseStream.Position - startPosition;
 			var padBytes = Util.GetPadding((int) totalLength, padMultiple);
 			ReadBytes(padBytes);
 		}
@@ -167,7 +171,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// Read a fixed-length ASCII string.
 		/// </summary>
 		public string ReadAsciiChars(int count) {
-			var bytes = reader.ReadBytes(count);
+			var bytes = _reader.ReadBytes(count);
 			;
 			var s = Encoding.ASCII.GetString(bytes);
 			return s;
@@ -178,7 +182,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// </summary>
 		/// <param name="padMultiple">Byte multiple that the Pascal string is padded to.</param>
 		public string ReadPascalString(int padMultiple) {
-			var startPosition = reader.BaseStream.Position;
+			var startPosition = _reader.BaseStream.Position;
 
 			byte stringLength = ReadByte();
 			var bytes = ReadBytes(stringLength);
@@ -186,7 +190,7 @@ namespace com.utkaka.Psd.PsdFiles {
 
 			// Default decoder uses best-fit fallback, so it will not throw any
 			// exceptions if unknown characters are encountered.
-			var str = encoding.GetString(bytes);
+			var str = _context.Encoding.GetString(bytes);
 			return str;
 		}
 
@@ -200,7 +204,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 		
 		public void SkipBytes(int i) {
-			reader.BaseStream.Position += i;
+			_reader.BaseStream.Position += i;
 		}
 
 		//////////////////////////////////////////////////////////////////
@@ -221,10 +225,10 @@ namespace com.utkaka.Psd.PsdFiles {
 			}
 
 			if (disposing) {
-				if (reader != null) {
+				if (_reader != null) {
 					// BinaryReader.Dispose() is protected.
-					reader.Close();
-					reader = null;
+					_reader.Close();
+					_reader = null;
 				}
 			}
 

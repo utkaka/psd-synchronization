@@ -7,9 +7,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-using com.utkaka.Psd.PsdFiles.Descriptors.Elements.ReferenceElements;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements.ReferenceElements;
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class ReferenceElement : AbstractDescriptorElement {
 		public const string OSType = "obj";
 		

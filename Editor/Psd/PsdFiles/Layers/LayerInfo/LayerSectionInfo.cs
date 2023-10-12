@@ -12,7 +12,7 @@
 
 using System;
 
-namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 	public enum LayerSectionType {
 		Layer = 0,
 		OpenFolder = 1,

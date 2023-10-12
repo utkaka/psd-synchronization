@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.Descriptors;
-using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
-using com.utkaka.Psd.PsdFiles.EngineData;
-using com.utkaka.Psd.PsdFiles.Layers;
-using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.EngineData;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 using UnityEngine;
 
-namespace com.utkaka.Psd.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
 	public class TextLayer : ImageLayer {
 		private string _text;
 		private Matrix4x4 _matrix;

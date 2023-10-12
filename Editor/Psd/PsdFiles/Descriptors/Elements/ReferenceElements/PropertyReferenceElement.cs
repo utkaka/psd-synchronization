@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
 	public class PropertyReferenceElement : AbstractReferenceElement {
 		private readonly string _classIdName;
 		private readonly string _classId;

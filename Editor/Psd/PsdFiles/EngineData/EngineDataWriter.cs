@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace com.utkaka.Psd.PsdFiles.EngineData {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.EngineData {
 	public static class EngineDataWriter {
 		public static byte[] Write(EngineDataObject root) {
 			var stream = new List<byte> {

@@ -8,9 +8,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors {
 	public abstract class AbstractDescriptorElement {
 		protected abstract string ElementType { get; }
 

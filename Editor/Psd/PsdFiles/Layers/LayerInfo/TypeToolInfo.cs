@@ -7,11 +7,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-using com.utkaka.Psd.PsdFiles.Descriptors;
-using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
-using com.utkaka.Psd.PsdFiles.EngineData;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.EngineData;
 
-namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 	public struct TypeToolMatrix {
 		public double XX;
 		public double XY;

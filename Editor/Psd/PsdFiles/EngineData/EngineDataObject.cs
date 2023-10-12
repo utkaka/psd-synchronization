@@ -9,7 +9,7 @@
 
 using System.Collections.Generic;
 
-namespace com.utkaka.Psd.PsdFiles.EngineData {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.EngineData {
 	public class EngineDataObject {
 		private object _value;
 

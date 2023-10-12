@@ -9,7 +9,7 @@
 
 using System.Collections.Generic;
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class ObjectArrayItem {
 		private readonly string _key;
 		private readonly string _type;

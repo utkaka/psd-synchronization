@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using com.utkaka.Psd.Layers;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.ImageResources;
+using com.utkaka.PsdSynchronization.Editor.Psd.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
 
-namespace com.utkaka.Psd {
+namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	public class Document {
 		public ImageLayer BaseLayer { get; set; }
 		public int Height { get; set; }

@@ -9,7 +9,7 @@
 
 using System.Collections.Generic;
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class GlobalObjectElement : DescriptorElement {
 		public const string OSType = "GlbO";
 		protected override string ElementType => OSType;

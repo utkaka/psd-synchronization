@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
-namespace com.utkaka.Psd.PsdFiles.Compression {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression {
 	internal class RleImage : ImageData {
 		private byte[] rleData;
 		private RleRowLengths rleRowLengths;

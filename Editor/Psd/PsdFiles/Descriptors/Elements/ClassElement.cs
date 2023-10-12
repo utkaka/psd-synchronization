@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class ClassElement : AbstractDescriptorElement {
 		public const string OSType = "type";
 		private readonly string _name;

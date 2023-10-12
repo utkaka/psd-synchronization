@@ -1,6 +1,6 @@
 {
-    "name": "com.utkaka.Psd",
-    "rootNamespace": "com.utkaka.Psd",
+    "name": "com.utkaka.PsdSynchronization.Editor.Psd",
+    "rootNamespace": "com.utkaka.PsdSynchronization.Editor.Psd",
     "references": [
         "GUID:2665a8d13d1b3f18800f46e256720795",
         "GUID:d8b63aba1907145bea998dd612889d6b"

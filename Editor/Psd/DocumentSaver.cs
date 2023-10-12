@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Text;
-using com.utkaka.Psd.ImageProcessing.Encoding;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 
-namespace com.utkaka.Psd {
+namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	public static class DocumentSaver {
 		public static void Save(Document input, Stream output) {
 			var psdVersion = ((input.Height > 30000) || (input.Width > 30000))
@@ -42,7 +42,7 @@ namespace com.utkaka.Psd {
 
 			psdFile.Layers.Reverse();
 
-			psdFile.Save(output, Encoding.Default);
+			psdFile.Save(output, new Context());
 		}
 	}
 }

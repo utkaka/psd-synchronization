@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace com.utkaka.Psd.PsdFiles.EngineData {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.EngineData {
 	public static class EngineDataReader {
 		public static EngineDataObject Read(byte[] stream) {
 			var reader = new Reader();

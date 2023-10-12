@@ -11,10 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using com.utkaka.Psd.PsdFiles.Descriptors;
-using com.utkaka.Psd.PsdFiles.Descriptors.Elements;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
 
-namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
     public class LinkedFilesInfo : AbstractLayerInfo {
         public override string Key => _key;
         public override string Signature => "8BIM";
@@ -114,7 +114,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
             if (_type == "liFE" && _version == 2) fileData = reader.ReadBytes(fileSize);
 
             if (fileData != null) {
-                _file = new PsdFile(new MemoryStream(fileData), new LoadContext());
+                _file = new PsdFile(new MemoryStream(fileData), new Context());
             }
             while (size % 4 > 0) size++;
             reader.BaseStream.Position = startPosition + (long)size;
@@ -153,7 +153,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
             writer.WriteAsciiChars(_fileCreator);
 
             var psdStream = new MemoryStream();
-            _file.Save(psdStream, Encoding.Default);
+            _file.Save(psdStream, writer.Context);
             writer.Write((ulong)psdStream.Length);
             writer.Write(_hasFileOpenDescriptor);
             if (_hasFileOpenDescriptor) {

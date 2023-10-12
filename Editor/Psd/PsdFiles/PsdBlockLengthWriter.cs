@@ -15,7 +15,7 @@
 
 using System;
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	/// <summary>
 	/// Writes the actual length in front of the data block upon disposal.
 	/// </summary>

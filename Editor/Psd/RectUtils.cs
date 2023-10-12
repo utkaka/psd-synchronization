@@ -1,7 +1,7 @@
 using System.Drawing;
 using UnityEngine;
 
-namespace com.utkaka.Psd {
+namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	public static class RectUtils {
 
 		public static Rect RectFromBounds(double left, double top, double right, double bottom) {

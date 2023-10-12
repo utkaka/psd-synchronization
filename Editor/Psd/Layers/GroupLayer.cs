@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Drawing;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.Layers;
-using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 
-namespace com.utkaka.Psd.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
 	public class GroupLayer : AbstractLayer {
 		public List<AbstractLayer> ChildLayer { get; }
 

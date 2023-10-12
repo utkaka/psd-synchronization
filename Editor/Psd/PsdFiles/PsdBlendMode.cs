@@ -10,7 +10,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	public static class PsdBlendMode {
 		public const string Normal = "norm";
 		public const string Darken = "dark";

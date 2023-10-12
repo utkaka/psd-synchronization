@@ -18,34 +18,40 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using UnityEngine;
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	/// <summary>
 	/// Writes PSD data types in big-endian byte order.
 	/// </summary>
 	public class PsdBinaryWriter : IDisposable {
-		private BinaryWriter writer;
-		private Encoding encoding;
+		private BinaryWriter _writer;
+		private Context _context;
+
+		public Context Context => _context;
 
 		internal Stream BaseStream {
 			get {
 				// Flush the writer so that the Stream.Position is correct.
 				Flush();
-				return writer.BaseStream;
+				return _writer.BaseStream;
 			}
 		}
 
-		public PsdBinaryWriter(Stream stream, Encoding encoding) {
-			this.encoding = encoding;
-
+		public PsdBinaryWriter(Stream stream, Context context) {
 			// Specifying ASCII encoding will help catch any accidental calls to
 			// BinaryWriter.Write(String).  Since we do not own the Stream, the
 			// constructor is called with leaveOpen = true.
-			writer = new BinaryWriter(stream, Encoding.ASCII, true);
+			_writer = new BinaryWriter(stream, Encoding.ASCII, true);
+			_context = context;
+		}
+		
+		public void Log(LogType logType, string message) {
+			_context.Logger.Log(logType, $"PsdBinaryWriter: 0x{BaseStream.Position:x}, {BaseStream.Position}, {message}");
 		}
 
 		public void Flush() {
-			writer.Flush();
+			_writer.Flush();
 		}
 
 		public void Write(Rectangle rect) {
@@ -61,10 +67,10 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// <param name="startPosition">Starting position of the padded block.</param>
 		/// <param name="padMultiple">Byte multiple to pad to.</param>
 		public void WritePadding(long startPosition, int padMultiple) {
-			var length = writer.BaseStream.Position - startPosition;
+			var length = _writer.BaseStream.Position - startPosition;
 			var padBytes = Util.GetPadding((int) length, padMultiple);
 			for (long i = 0; i < padBytes; i++) {
-				writer.Write((byte) 0);
+				_writer.Write((byte) 0);
 			}
 		}
 
@@ -78,7 +84,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// </summary>
 		public void WriteAsciiChars(string s) {
 			var bytes = Encoding.ASCII.GetBytes(s);
-			writer.Write(bytes);
+			_writer.Write(bytes);
 		}
 
 
@@ -89,17 +95,17 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// <param name="padMultiple">Byte multiple that the Pascal string is padded to.</param>
 		/// <param name="maxBytes">Maximum number of bytes to write.</param>
 		public void WritePascalString(string s, int padMultiple, byte maxBytes = 255) {
-			var startPosition = writer.BaseStream.Position;
+			var startPosition = _writer.BaseStream.Position;
 
-			byte[] bytesArray = encoding.GetBytes(s);
+			byte[] bytesArray = _context.Encoding.GetBytes(s);
 			if (bytesArray.Length > maxBytes) {
 				var tempArray = new byte[maxBytes];
 				Array.Copy(bytesArray, tempArray, maxBytes);
 				bytesArray = tempArray;
 			}
 
-			writer.Write((byte) bytesArray.Length);
-			writer.Write(bytesArray);
+			_writer.Write((byte) bytesArray.Length);
+			_writer.Write(bytesArray);
 			WritePadding(startPosition, padMultiple);
 		}
 
@@ -113,15 +119,15 @@ namespace com.utkaka.Psd.PsdFiles {
 		}
 
 		public void Write(bool value) {
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(byte[] value) {
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(byte value) {
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(Int16 value) {
@@ -129,7 +135,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes2((byte*) &value);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(Int32 value) {
@@ -137,7 +143,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes4((byte*) &value);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(Int64 value) {
@@ -145,7 +151,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes((byte*) &value, 8);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(UInt16 value) {
@@ -153,7 +159,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes2((byte*) &value);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(UInt32 value) {
@@ -161,7 +167,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes4((byte*) &value);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 		public void Write(UInt64 value) {
@@ -169,7 +175,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes((byte*) &value, 8);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 		
 		public void Write(Double value) {
@@ -177,7 +183,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				Util.SwapBytes((byte*) &value, 8);
 			}
 
-			writer.Write(value);
+			_writer.Write(value);
 		}
 
 
@@ -199,11 +205,11 @@ namespace com.utkaka.Psd.PsdFiles {
 			}
 
 			if (disposing) {
-				if (writer != null) {
+				if (_writer != null) {
 					// BinaryWriter.Dispose() is protected, so we have to call Close.
 					// The BinaryWriter will be automatically flushed on close.
-					writer.Close();
-					writer = null;
+					_writer.Close();
+					_writer = null;
 				}
 			}
 

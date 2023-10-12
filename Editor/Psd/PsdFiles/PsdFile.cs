@@ -5,6 +5,7 @@
 // This software is provided under the MIT License:
 //   Copyright (c) 2006-2007 Frank Blumenberg
 //   Copyright (c) 2010-2020 Tao Yue
+//   Copyright (c) 2023 Anton Alexeyev
 //
 // Portions of this file are provided under the BSD 3-clause License:
 //   Copyright (c) 2006, Jonas Beckeman
@@ -15,17 +16,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using com.utkaka.Psd.PsdFiles.ImageResources;
-using com.utkaka.Psd.PsdFiles.Layers;
-using com.utkaka.Psd.PsdFiles.Layers.LayerInfo;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	public enum PsdColorMode {
 		Bitmap = 0,
 		Grayscale = 1,
@@ -54,27 +56,19 @@ namespace com.utkaka.Psd.PsdFiles {
 			AdditionalInfo = new List<AbstractLayerInfo>();
 		}
 
-		public PsdFile(string filename, LoadContext loadContext)
+		public PsdFile(Stream stream, Context context)
 			: this() {
-			using (var stream = new FileStream(filename, FileMode.Open)) {
-				Load(stream, loadContext);
-			}
-		}
-
-		public PsdFile(Stream stream, LoadContext loadContext)
-			: this() {
-			Load(stream, loadContext);
+			Load(stream, context);
 		}
 
 		#endregion
 
 		#region Load and save
 
-		internal LoadContext LoadContext { get; private set; }
+		//internal Context Context { get; private set; }
 
-		private void Load(Stream stream, LoadContext loadContext) {
-			LoadContext = loadContext;
-			var reader = new PsdBinaryReader(stream, loadContext.Encoding);
+		private void Load(Stream stream, Context context) {
+			var reader = new PsdBinaryReader(stream, context);
 
 			LoadHeader(reader);
 			LoadColorModeData(reader);
@@ -85,16 +79,10 @@ namespace com.utkaka.Psd.PsdFiles {
 			DecompressImages();
 		}
 
-		public void Save(string fileName, Encoding encoding) {
-			using (var stream = new FileStream(fileName, FileMode.Create)) {
-				Save(stream, encoding);
-			}
-		}
-
-		public void Save(Stream stream, Encoding encoding) {
+		public void Save(Stream stream, Context context) {
 			PrepareSave();
 
-			using (var writer = new PsdBinaryWriter(stream, encoding)) {
+			using (var writer = new PsdBinaryWriter(stream, context)) {
 				SaveHeader(writer);
 				SaveColorModeData(writer);
 				SaveImageResources(writer);
@@ -197,7 +185,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		///////////////////////////////////////////////////////////////////////////
 
 		private void LoadHeader(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, File header");
+			reader.Log(LogType.Log, "Load, Begin, File header");
 
 			var signature = reader.ReadAsciiChars(4);
 			if (signature != "8BPS") {
@@ -205,7 +193,7 @@ namespace com.utkaka.Psd.PsdFiles {
 			}
 
 			Version = (PsdFileVersion) reader.ReadInt16();
-			Util.DebugMessage(reader.BaseStream, $"Load, Info, Version {(int) Version}");
+			reader.Log(LogType.Log, $"Load, Info, Version {(int) Version}");
 			if ((Version != PsdFileVersion.Psd)
 			    && (Version != PsdFileVersion.PsbLargeDocument)) {
 				throw new PsdInvalidException("The PSD file has an unknown version");
@@ -220,13 +208,13 @@ namespace com.utkaka.Psd.PsdFiles {
 			BitDepth = reader.ReadInt16();
 			ColorMode = (PsdColorMode) reader.ReadInt16();
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, File header");
+			reader.Log(LogType.Log, "Load, End, File header");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private void SaveHeader(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, File header");
+			writer.Log(LogType.Log, "Save, Begin, File header");
 
 			string signature = "8BPS";
 			writer.WriteAsciiChars(signature);
@@ -238,7 +226,7 @@ namespace com.utkaka.Psd.PsdFiles {
 			writer.Write((Int16) BitDepth);
 			writer.Write((Int16) ColorMode);
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, File header");
+			writer.Log(LogType.Log, "Save, End, File header");
 		}
 
 		#endregion
@@ -257,23 +245,23 @@ namespace com.utkaka.Psd.PsdFiles {
 		public byte[] ColorModeData = new byte[0];
 
 		private void LoadColorModeData(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, ColorModeData");
+			reader.Log(LogType.Log, "Load, Begin, ColorModeData");
 
 			var paletteLength = reader.ReadUInt32();
 			if (paletteLength > 0) {
 				ColorModeData = reader.ReadBytes((int) paletteLength);
 			}
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, ColorModeData");
+			reader.Log(LogType.Log, "Load, End, ColorModeData");
 		}
 
 		private void SaveColorModeData(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, ColorModeData");
+			writer.Log(LogType.Log, "Save, Begin, ColorModeData");
 
 			writer.Write((UInt32) ColorModeData.Length);
 			writer.Write(ColorModeData);
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, ColorModeData");
+			writer.Log(LogType.Log, "Save, End, ColorModeData");
 		}
 
 		#endregion
@@ -296,7 +284,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		///////////////////////////////////////////////////////////////////////////
 
 		private void LoadImageResources(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, ImageResources");
+			reader.Log(LogType.Log, "Load, Begin, ImageResources");
 
 			var imageResourcesLength = reader.ReadUInt32();
 			if (imageResourcesLength <= 0) {
@@ -310,7 +298,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				ImageResourceList.Add(imageResource);
 			}
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, ImageResources");
+			reader.Log(LogType.Log, "Load, End, ImageResources");
 
 			//-----------------------------------------------------------------------
 			// make sure we are not on a wrong offset, so set the stream position 
@@ -321,7 +309,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		///////////////////////////////////////////////////////////////////////////
 
 		private void SaveImageResources(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, ImageResources");
+			writer.Log(LogType.Log, "Save, Begin, ImageResources");
 
 			using (new PsdBlockLengthWriter(writer)) {
 				foreach (var imgRes in ImageResourceList) {
@@ -329,7 +317,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				}
 			}
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, ImageResources");
+			writer.Log(LogType.Log, "Save, End, ImageResources");
 		}
 
 		#endregion
@@ -347,7 +335,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		///////////////////////////////////////////////////////////////////////////
 
 		private void LoadLayerAndMaskInfo(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, Layer and mask info");
+			reader.Log(LogType.Log, "Load, Begin, Layer and mask info");
 
 			var layersAndMaskLength = IsLargeDocument
 				? reader.ReadInt64()
@@ -371,13 +359,13 @@ namespace com.utkaka.Psd.PsdFiles {
 				}
 			}
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, Layer and mask info");
+			reader.Log(LogType.Log, "Load, End, Layer and mask info");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private void SaveLayerAndMaskInfo(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Layer and mask info");
+			writer.Log(LogType.Log, "Save, Begin, Layer and mask info");
 
 			using (new PsdBlockLengthWriter(writer, IsLargeDocument)) {
 				var startPosition = writer.BaseStream.Position;
@@ -394,7 +382,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				writer.WritePadding(startPosition, 2);
 			}
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, Layer and mask info");
+			writer.Log(LogType.Log, "Save, End, Layer and mask info");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -405,7 +393,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// <param name="reader">PSD reader.</param>
 		/// <param name="hasHeader">Whether the Layers Info section has a length header.</param>
 		internal void LoadLayers(PsdBinaryReader reader, bool hasHeader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, Layers Info section");
+			reader.Log(LogType.Log, "Load, Begin, Layers Info section");
 
 			long sectionLength = 0;
 			if (hasHeader) {
@@ -414,10 +402,7 @@ namespace com.utkaka.Psd.PsdFiles {
 					: reader.ReadUInt32();
 
 				if (sectionLength <= 0) {
-					// The callback may take action when there are 0 layers, so it must
-					// be called even though the Layers Info section is empty.
-					LoadContext.OnLoadLayersHeader(this);
-					Util.DebugMessage(reader.BaseStream, "Load, End, Layers Info section");
+					reader.Log(LogType.Log, "Load, End, Layers Info section");
 					return;
 				}
 			}
@@ -438,20 +423,17 @@ namespace com.utkaka.Psd.PsdFiles {
 				Layers.Add(layer);
 			}
 
-			// Header is complete just before loading pixel data
-			LoadContext.OnLoadLayersHeader(this);
-
 			//-----------------------------------------------------------------------
 
 			// Load image data for all channels.
 			foreach (var layer in Layers) {
-				Util.DebugMessage(reader.BaseStream,
+				reader.Log(LogType.Log,
 					$"Load, Begin, Layer image, {layer.Name}");
 				foreach (var channel in layer.Channels) {
 					channel.LoadPixelData(reader);
 				}
 
-				Util.DebugMessage(reader.BaseStream,
+				reader.Log(LogType.Log,
 					$"Load, End, Layer image, {layer.Name}");
 			}
 
@@ -471,7 +453,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				}
 			}
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, Layers");
+			reader.Log(LogType.Log, "Load, End, Layers");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -598,8 +580,8 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// Saves the Layers Info section, including headers and padding.
 		/// </summary>
 		/// <param name="writer">The PSD writer.</param>
-		internal void SaveLayers(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Layers Info section");
+		private void SaveLayers(PsdBinaryWriter writer) {
+			writer.Log(LogType.Log, "Save, Begin, Layers Info section");
 
 			using (new PsdBlockLengthWriter(writer, IsLargeDocument)) {
 				var startPosition = writer.BaseStream.Position;
@@ -617,7 +599,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				writer.WritePadding(startPosition, 4);
 			}
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, Layers Info section");
+			writer.Log(LogType.Log, "Save, End, Layers Info section");
 		}
 
 		/// <summary>
@@ -625,7 +607,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// </summary>
 		/// <param name="writer">The PSD writer.</param>
 		internal void SaveLayersData(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Layers");
+			writer.Log(LogType.Log, "Save, Begin, Layers");
 
 			var numLayers = (Int16) Layers.Count;
 			if (AbsoluteAlpha) {
@@ -646,13 +628,13 @@ namespace com.utkaka.Psd.PsdFiles {
 			}
 
 			foreach (var layer in Layers) {
-				Util.DebugMessage(writer.BaseStream,
+				writer.Log(LogType.Log,
 					$"Save, Begin, Layer image, {layer.Name}");
 				foreach (var channel in layer.Channels) {
 					channel.SavePixelData(writer);
 				}
 
-				Util.DebugMessage(writer.BaseStream,
+				writer.Log(LogType.Log,
 					$"Save, End, Layer image, {layer.Name}");
 			}
 
@@ -660,7 +642,7 @@ namespace com.utkaka.Psd.PsdFiles {
 			// lengths for compatible layers, but unpadded lengths for Additional
 			// Info layers.
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, Layers");
+			writer.Log(LogType.Log, "Save, End, Layers");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -668,7 +650,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		byte[] GlobalLayerMaskData = new byte[0];
 
 		private void LoadGlobalLayerMask(PsdBinaryReader reader, long endPosition) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, GlobalLayerMask");
+			reader.Log(LogType.Log, "Load, Begin, GlobalLayerMask");
 
 			if (endPosition - reader.BaseStream.Position >= 4) {
 				var maskLength = reader.ReadUInt32();
@@ -678,13 +660,13 @@ namespace com.utkaka.Psd.PsdFiles {
 				}
 			}
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, GlobalLayerMask");
+			reader.Log(LogType.Log, "Load, End, GlobalLayerMask");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private void SaveGlobalLayerMask(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, GlobalLayerMask");
+			writer.Log(LogType.Log, "Save, Begin, GlobalLayerMask");
 
 			if (AdditionalInfo.Exists(x => x.Key == "LMsk")) {
 				writer.Write((UInt32) 0);
@@ -693,7 +675,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				writer.Write(GlobalLayerMaskData);
 			}
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, GlobalLayerMask");
+			writer.Log(LogType.Log, "Save, End, GlobalLayerMask");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -712,13 +694,13 @@ namespace com.utkaka.Psd.PsdFiles {
 		public ImageCompression ImageCompression { get; set; }
 
 		private void LoadImage(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, Composite image");
+			reader.Log(LogType.Log, "Load, Begin, Composite image");
 
 			ImageCompression = (ImageCompression) reader.ReadInt16();
 
 			// Create channels
 			for (Int16 i = 0; i < ChannelCount; i++) {
-				Util.DebugMessage(reader.BaseStream, "Load, Begin, Channel image data");
+				reader.Log(LogType.Log, "Load, Begin, Channel image data");
 
 				var channel = new Channel(i, this.BaseLayer);
 				channel.ImageCompression = ImageCompression;
@@ -733,14 +715,14 @@ namespace com.utkaka.Psd.PsdFiles {
 				}
 
 				BaseLayer.Channels.Add(channel);
-				Util.DebugMessage(reader.BaseStream, "Load, End, Channel image data");
+				reader.Log(LogType.Log, "Load, End, Channel image data");
 			}
 
 			foreach (var channel in this.BaseLayer.Channels) {
-				Util.DebugMessage(reader.BaseStream, "Load, Begin, Channel image data");
+				reader.Log(LogType.Log, "Load, Begin, Channel image data");
 				Util.CheckByteArrayLength(channel.Length);
 				channel.ImageDataRaw = reader.ReadBytes((int) channel.Length);
-				Util.DebugMessage(reader.BaseStream, "Load, End, Channel image data");
+				reader.Log(LogType.Log, "Load, End, Channel image data");
 			}
 
 			// If there is exactly one more channel than we need, then it is the
@@ -751,30 +733,30 @@ namespace com.utkaka.Psd.PsdFiles {
 				alphaChannel.ID = -1;
 			}
 
-			Util.DebugMessage(reader.BaseStream, "Load, End, Composite image");
+			reader.Log(LogType.Log, "Load, End, Composite image");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		private void SaveImage(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Composite image");
+			writer.Log(LogType.Log, "Save, Begin, Composite image");
 
 			writer.Write((short) this.ImageCompression);
 			if (this.ImageCompression == ImageCompression.Rle) {
 				foreach (var channel in this.BaseLayer.Channels) {
-					Util.DebugMessage(writer.BaseStream, "Save, Begin, RLE header");
+					writer.Log(LogType.Log, "Save, Begin, RLE header");
 					channel.RleRowLengths.Write(writer, IsLargeDocument);
-					Util.DebugMessage(writer.BaseStream, "Save, End, RLE header");
+					writer.Log(LogType.Log, "Save, End, RLE header");
 				}
 			}
 
 			foreach (var channel in this.BaseLayer.Channels) {
-				Util.DebugMessage(writer.BaseStream, "Save, Begin, Channel image data");
+				writer.Log(LogType.Log, "Save, Begin, Channel image data");
 				writer.Write(channel.ImageDataRaw);
-				Util.DebugMessage(writer.BaseStream, "Save, End, Channel image data");
+				writer.Log(LogType.Log, "Save, End, Channel image data");
 			}
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, Composite image");
+			writer.Log(LogType.Log, "Save, End, Composite image");
 		}
 
 		#endregion

@@ -14,7 +14,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace com.utkaka.Psd.PsdFiles.Compression {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression {
 	public class ZipPredict32Image : ImageData {
 		private ZipImage zipImage;
 

@@ -16,8 +16,9 @@
 using System;
 using System.Collections.Specialized;
 using System.Drawing;
+using UnityEngine;
 
-namespace com.utkaka.Psd.PsdFiles.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers {
 	public class Mask {
 		/// <summary>
 		/// The layer to which this mask belongs
@@ -102,7 +103,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 		public MaskInfo() { }
 
 		public MaskInfo(PsdBinaryReader reader, Layer layer) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, MaskInfo");
+			reader.Log(LogType.Log,"Load, Begin, MaskInfo");
 
 			var maskLength = reader.ReadUInt32();
 			if (maskLength <= 0) {
@@ -129,14 +130,13 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 
 			// 20-byte mask data will end with padding.
 			reader.BaseStream.Position = endPosition;
-
-			Util.DebugMessage(reader.BaseStream, "Load, End, MaskInfo");
+			reader.Log(LogType.Log, "Load, End, MaskInfo");
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 
 		public void Save(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, MaskInfo");
+			writer.Log(LogType.Log, "Save, Begin, MaskInfo");
 
 			if (LayerMask == null) {
 				writer.Write((UInt32) 0);
@@ -158,7 +158,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 				}
 			}
 
-			Util.DebugMessage(writer.BaseStream, "Save, End, MaskInfo");
+			writer.Log(LogType.Log, "Save, End, MaskInfo");
 		}
 	}
 }

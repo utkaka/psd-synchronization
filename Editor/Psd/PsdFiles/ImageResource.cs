@@ -16,10 +16,11 @@
 
 using System;
 using System.Collections.Generic;
-using com.utkaka.Psd.PsdFiles.ImageResources;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
+using UnityEngine;
 using static System.FormattableString;
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	public enum ResourceID {
 		Undefined = 0,
 		MacPrintInfo = 1001,
@@ -132,7 +133,7 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// Write out the image resource block: header and data.
 		/// </summary>
 		public void Save(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, ImageResource");
+			writer.Log(LogType.Log, "Save, Begin, ImageResource");
 
 			writer.WriteAsciiChars(Signature);
 			writer.Write((UInt16) ID);
@@ -146,7 +147,7 @@ namespace com.utkaka.Psd.PsdFiles {
 
 			writer.WritePadding(startPosition, 2);
 
-			Util.DebugMessage(writer.BaseStream, $"Save, End, ImageResource, {ID}");
+			writer.Log(LogType.Log, $"Save, End, ImageResource, {ID}");
 		}
 
 		/// <summary>
@@ -163,7 +164,7 @@ namespace com.utkaka.Psd.PsdFiles {
 	/// </summary>
 	public static class ImageResourceFactory {
 		public static ImageResource CreateImageResource(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, ImageResource");
+			reader.Log(LogType.Log, "Load, Begin, ImageResource");
 
 			var signature = reader.ReadAsciiChars(4);
 			var resourceIdInt = reader.ReadUInt16();
@@ -197,7 +198,7 @@ namespace com.utkaka.Psd.PsdFiles {
 					break;
 			}
 
-			Util.DebugMessage(reader.BaseStream,
+			reader.Log(LogType.Log,
 				$"Load, End, ImageResource, {resourceId}");
 
 			// Reposition the reader if we do not consume the full resource block.

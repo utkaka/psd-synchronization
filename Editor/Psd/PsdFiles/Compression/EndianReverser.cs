@@ -10,7 +10,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Compression {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression {
 	public class EndianReverser : ImageData {
 		private ImageData imageData;
 

@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.EngineData {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.EngineData {
 	public class Constants {
 		public const int LineFeed = 10;
 		public const int Tab = 9;

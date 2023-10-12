@@ -12,7 +12,7 @@
 
 using System.Diagnostics;
 
-namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 	[DebuggerDisplay("Layer Info: { key }")]
 	public class RawLayerInfo : AbstractLayerInfo {
 		private string signature;

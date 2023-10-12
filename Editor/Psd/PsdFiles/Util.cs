@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
-namespace com.utkaka.Psd.PsdFiles {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	public static class Util {
 		[DebuggerDisplay("Top = {Top}, Bottom = {Bottom}, Left = {Left}, Right = {Right}")]
 		public struct RectanglePosition {
@@ -286,10 +286,10 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// Writes a message to the debug console, indicating the current position
 		/// in the stream in both decimal and hexadecimal formats.
 		/// </summary>
-		[Conditional("DEBUG")]
+		/*[Conditional("DEBUG")]
 		public static void DebugMessage(Stream stream, string message) {
 			Debug.WriteLine($"0x{stream.Position:x}, {stream.Position}, {message}");
-		}
+		}*/
 	}
 
 	/// <summary>

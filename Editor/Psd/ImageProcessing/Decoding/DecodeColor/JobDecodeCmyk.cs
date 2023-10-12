@@ -4,7 +4,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace com.utkaka.Psd.ImageProcessing.Decoding.DecodeColor {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor {
 	[BurstCompile]
 	public struct JobDecodeCmyk : IJobParallelFor {
 		private DecoderChannelsData _channels;

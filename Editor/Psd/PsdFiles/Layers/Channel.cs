@@ -18,9 +18,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using com.utkaka.Psd.PsdFiles.Compression;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Compression;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
-namespace com.utkaka.Psd.PsdFiles.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers {
 	// ChannelList is exposed as an ICollection so that it cannot be accidentally
 	// indexed by ID.
 	public interface IChannelList : ICollection<Channel> {
@@ -141,7 +143,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 		}
 
 		internal Channel(PsdBinaryReader reader, Layer layer) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, Channel");
+			reader.Log(LogType.Log, "Load, Begin, Channel");
 
 			ID = reader.ReadInt16();
 			Length = (layer.PsdFile.IsLargeDocument)
@@ -149,11 +151,11 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 				: reader.ReadInt32();
 			Layer = layer;
 
-			Util.DebugMessage(reader.BaseStream, $"Load, End, Channel, {ID}");
+			reader.Log(LogType.Log, $"Load, End, Channel, {ID}");
 		}
 
 		internal void Save(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Channel");
+			writer.Log(LogType.Log, "Save, Begin, Channel");
 
 			writer.Write(ID);
 			if (Layer.PsdFile.IsLargeDocument) {
@@ -162,13 +164,13 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 				writer.Write((Int32) Length);
 			}
 
-			Util.DebugMessage(writer.BaseStream, $"Save, End, Channel, {ID}");
+			writer.Log(LogType.Log, $"Save, End, Channel, {ID}");
 		}
 
 		//////////////////////////////////////////////////////////////////
 
 		internal void LoadPixelData(PsdBinaryReader reader) {
-			Util.DebugMessage(reader.BaseStream, "Load, Begin, Channel image");
+			reader.Log(LogType.Log, "Load, Begin, Channel image");
 
 			if (Length == 0) {
 				ImageCompression = ImageCompression.Raw;
@@ -205,7 +207,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 					break;
 			}
 
-			Util.DebugMessage(reader.BaseStream, $"Load, End, Channel image, {ID}");
+			reader.Log(LogType.Log, $"Load, End, Channel image, {ID}");
 			Debug.Assert(reader.BaseStream.Position == endPosition,
 				"Pixel data was not fully read in.");
 		}
@@ -257,7 +259,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 		}
 
 		internal void SavePixelData(PsdBinaryWriter writer) {
-			Util.DebugMessage(writer.BaseStream, "Save, Begin, Channel image");
+			writer.Log(LogType.Log, "Save, Begin, Channel image");
 
 			writer.Write((short) ImageCompression);
 			if (ImageDataRaw == null) {
@@ -270,7 +272,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 
 			writer.Write(ImageDataRaw);
 
-			Util.DebugMessage(writer.BaseStream, $"Save, End, Channel image, {ID}");
+			writer.Log(LogType.Log, $"Save, End, Channel image, {ID}");
 		}
 	}
 }

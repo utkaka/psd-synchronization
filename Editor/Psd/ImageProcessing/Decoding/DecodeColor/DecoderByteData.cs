@@ -1,4 +1,4 @@
-namespace com.utkaka.Psd.ImageProcessing.Decoding.DecodeColor {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor {
 	public struct DecoderByteData {
 		private int _shift;
 		private int _byteDepth;

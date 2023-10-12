@@ -1,4 +1,4 @@
-namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 	public class LayerIdInfo : AbstractLayerInfo {
 		public override string Signature => "8BIM";
 

@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
 	public class ClassReferenceElement : AbstractReferenceElement {
 		public const string OSType = "Clss";
 		private readonly string _name;

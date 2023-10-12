@@ -1,11 +1,11 @@
-using com.utkaka.Psd.ImageProcessing.Decoding;
-using com.utkaka.Psd.ImageProcessing.Encoding;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding;
+using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using UnityEngine;
 
-namespace com.utkaka.Psd.Layers {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.Layers {
 	public class ImageLayer : AbstractLayer {
 		private NativeArray<Color32> _pixels;
 		public NativeArray<Color32> Pixels => _pixels;

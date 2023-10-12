@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace com.utkaka.Psd.ImageProcessing.Encoding {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding {
 	[BurstCompile]	
 	public struct JobEncodeRgb : IJobParallelFor {
 		public ImageLayerData LayerData;

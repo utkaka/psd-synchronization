@@ -1,6 +1,6 @@
 using Unity.Collections;
 
-namespace com.utkaka.Psd.ImageProcessing.Decoding.DecodeColor32 {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor32 {
 	public struct DecoderAlpha32Data {
 		public bool HasAlpha;
 		public DecoderMask32Data LayerMask;

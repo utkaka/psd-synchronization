@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using com.utkaka.Psd.Layers;
-using com.utkaka.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -24,12 +24,13 @@ namespace com.utkaka.PsdSynchronization.Editor {
 		}
 		
 		private void OnWizardCreate() {
+			var loggerType = PsdSynchronizationSettingsProvider.GetLoggerType();
 			var stream = File.OpenRead(_psdPath);
-			var psdFile = new PsdFile(stream, new LoadContext());
+			var psdFile = new PsdFile(stream, loggerType == PsdSynchronizationSettingsProvider.LoggerType.Console ? new Context(Debug.unityLogger) : new Context());
 			stream.Close();
 			
 			stream = File.OpenWrite(Path.Combine(Directory.GetParent(_psdPath)?.FullName, "Copy.psd"));
-			psdFile.Save(stream, Encoding.Default);
+			psdFile.Save(stream, loggerType == PsdSynchronizationSettingsProvider.LoggerType.Console ? new Context(Debug.unityLogger) : new Context());
 			stream.Close();
 			
 

@@ -1,10 +1,10 @@
 using System.Drawing;
-using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace com.utkaka.Psd.ImageProcessing.Encoding {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding {
 	public static class ImageEncoder {
 		public static void EncodeImage(Channel[] destChannels, Channel destAlphaChannel, NativeArray<Color32> sourcePixels,
 			Rectangle rect) {

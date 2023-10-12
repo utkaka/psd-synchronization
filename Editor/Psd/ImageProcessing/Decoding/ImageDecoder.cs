@@ -1,16 +1,16 @@
 using System;
 using System.Drawing;
-using com.utkaka.Psd.ImageProcessing.Decoding.DecodeColor;
-using com.utkaka.Psd.ImageProcessing.Decoding.DecodeColor32;
-using com.utkaka.Psd.Layers;
-using com.utkaka.Psd.PsdFiles;
-using com.utkaka.Psd.PsdFiles.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor;
+using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor32;
+using com.utkaka.PsdSynchronization.Editor.Psd.Layers;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
+using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace com.utkaka.Psd.ImageProcessing.Decoding {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding {
 	public static class ImageDecoder {
 		public static JobHandle DecodeImage(ImageLayer layer, Layer psdLayer, JobHandle inputDependencies = default(JobHandle)) {
 			var byteDepth = Util.BytesFromBitDepth(psdLayer.PsdFile.BitDepth);

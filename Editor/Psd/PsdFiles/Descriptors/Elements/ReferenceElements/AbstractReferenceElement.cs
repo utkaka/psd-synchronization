@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
 	public abstract class AbstractReferenceElement : AbstractDescriptorElement{ }
 	
 	public class ReferenceElementFactory {

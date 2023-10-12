@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements.ReferenceElements {
 	public class IdentifierReferenceElement : AbstractReferenceElement {
 		public const string OSType = "Idnt";
 		protected override string ElementType => OSType;

@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-namespace com.utkaka.Psd.PsdFiles.Descriptors.Elements {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class ListElement : AbstractDescriptorElement {
 		public const string OSType = "VlLs";
 		private readonly AbstractDescriptorElement[] _items; 

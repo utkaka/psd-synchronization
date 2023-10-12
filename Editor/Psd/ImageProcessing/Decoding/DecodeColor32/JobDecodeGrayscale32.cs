@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace com.utkaka.Psd.ImageProcessing.Decoding.DecodeColor32 {
+namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.DecodeColor32 {
 	[BurstCompile]
 	public struct JobDecodeGrayscale32 : IJobParallelFor {
 		private DecoderChannels32Data _channels;
