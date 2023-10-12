@@ -181,12 +181,8 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
             if (_version >= 6) writer.Write(_assetModTime);
             if (_version >= 7) writer.Write(_assetLockedState);
             if (_type == "liFE" && _version == 2) writer.Write(psdStream.ToArray());;
-
-            var size = writer.BaseStream.Position - startPosition;
-            while (size % 4 > 0) {
-                size++;
-                writer.Write((byte)0);
-            }
+            
+            writer.WritePadding(startPosition, 4);
         }
     }
 }

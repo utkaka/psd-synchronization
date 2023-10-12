@@ -28,7 +28,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 	/// <summary>
 	/// Layer sections are known as Groups in the Photoshop UI.
 	/// </summary>
-	public class AbstractLayerSectionInfo : AbstractLayerInfo {
+	public class LayerSectionInfo : AbstractLayerInfo {
 		public override string Signature => "8BIM";
 
 		private string key;
@@ -57,13 +57,13 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 			}
 		}
 
-		public AbstractLayerSectionInfo(string key, LayerSectionSubtype? subtype, LayerSectionType sectionType) {
+		public LayerSectionInfo(string key, LayerSectionSubtype? subtype, LayerSectionType sectionType) {
 			this.key = key;
 			this.subtype = subtype;
 			SectionType = sectionType;
 		}
 
-		public AbstractLayerSectionInfo(PsdBinaryReader reader, string key, int dataLength) {
+		public LayerSectionInfo(PsdBinaryReader reader, string key, int dataLength) {
 			// The key for layer section info is documented to be "lsct".  However,
 			// some Photoshop files use the undocumented key "lsdk", with apparently
 			// the same data format.
@@ -84,12 +84,12 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 		}
 
 		protected override void WriteData(PsdBinaryWriter writer) {
-			writer.Write((Int32) SectionType);
+			writer.Write((int) SectionType);
 			if (BlendModeKey != null) {
 				writer.WriteAsciiChars("8BIM");
 				writer.WriteAsciiChars(BlendModeKey);
 				if (subtype != null) {
-					writer.Write((Int32) Subtype);
+					writer.Write((int) Subtype);
 				}
 			}
 		}

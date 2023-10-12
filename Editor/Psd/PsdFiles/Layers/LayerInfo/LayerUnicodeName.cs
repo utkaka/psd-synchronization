@@ -11,18 +11,18 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
-	public class AbstractLayerUnicodeName : AbstractLayerInfo {
+	public class LayerUnicodeName : AbstractLayerInfo {
 		public override string Signature => "8BIM";
 
 		public override string Key => "luni";
 
 		public string Name { get; set; }
 
-		public AbstractLayerUnicodeName(string name) {
+		public LayerUnicodeName(string name) {
 			Name = name;
 		}
 
-		public AbstractLayerUnicodeName(PsdBinaryReader reader) {
+		public LayerUnicodeName(PsdBinaryReader reader) {
 			Name = reader.ReadUnicodeString();
 		}
 

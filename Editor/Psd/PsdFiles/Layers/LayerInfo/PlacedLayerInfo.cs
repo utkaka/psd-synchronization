@@ -10,7 +10,7 @@
 using com.utkaka.Psd.PsdFiles.Descriptors;
 
 namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
-	public class PlacedAbstractLayerInfo : AbstractLayerInfo {
+	public class PlacedLayerInfo : AbstractLayerInfo {
 		public override string Key => "SoLd";
 		public override string Signature => "8BIM";
 		
@@ -19,7 +19,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 		private readonly int _descriptorVersion;
 		private readonly Descriptor _descriptor;
 		
-		public PlacedAbstractLayerInfo(PsdBinaryReader reader) {
+		public PlacedLayerInfo(PsdBinaryReader reader) {
 			_type = reader.ReadAsciiChars(4);
 			_version = reader.ReadInt32();
 			_descriptorVersion = reader.ReadInt32();

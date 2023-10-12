@@ -30,8 +30,8 @@ namespace com.utkaka.Psd {
 			GroupLayer parentLayer = null;
 			for (var i = psdFile.Layers.Count - 1; i >= 0; i--) {
 				var psdFileLayer = psdFile.Layers[i];
-				var sectionInfo = (AbstractLayerSectionInfo)psdFileLayer.AdditionalInfo
-					.SingleOrDefault(x => x is AbstractLayerSectionInfo);
+				var sectionInfo = (LayerSectionInfo)psdFileLayer.AdditionalInfo
+					.SingleOrDefault(x => x is LayerSectionInfo);
 				AbstractLayer layer = null;
 				if (sectionInfo == null || sectionInfo.SectionType == LayerSectionType.Layer) {
 					var typeToolInfo = psdFileLayer.AdditionalInfo

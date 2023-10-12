@@ -23,7 +23,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 	/// required.  Photoshop will successfully load a high-bitdepth image that
 	/// puts the layers in the Layers section.
 	/// </remarks>
-	public class InfoAbstractLayers : AbstractLayerInfo {
+	public class InfoLayers : AbstractLayerInfo {
 		public override string Signature => "8BIM";
 
 		private string key;
@@ -31,7 +31,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 
 		public PsdFile PsdFile { get; set; }
 
-		public InfoAbstractLayers(PsdFile psdFile, string key) {
+		public InfoLayers(PsdFile psdFile, string key) {
 			PsdFile = psdFile;
 
 			switch (key) {
@@ -44,11 +44,11 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 					break;
 				default:
 					throw new PsdInvalidException(
-						$"{nameof(InfoAbstractLayers)} key must be Layr, Lr16, or Lr32.");
+						$"{nameof(InfoLayers)} key must be Layr, Lr16, or Lr32.");
 			}
 		}
 
-		public InfoAbstractLayers(PsdBinaryReader reader, PsdFile psdFile,
+		public InfoLayers(PsdBinaryReader reader, PsdFile psdFile,
 			string key, long dataLength)
 			: this(psdFile, key) {
 			if (psdFile.Layers.Count > 0) {
@@ -61,7 +61,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers.LayerInfo {
 
 			if (reader.BaseStream.Position != endPosition) {
 				throw new PsdInvalidException(
-					$"Incorrect length for {nameof(InfoAbstractLayers)}.");
+					$"Incorrect length for {nameof(InfoLayers)}.");
 			}
 		}
 

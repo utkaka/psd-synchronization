@@ -14,7 +14,7 @@ namespace com.utkaka.Psd.Layers {
 
 		protected override Layer ToPsdLayer(PsdFile psdFile) {
 			var psdLayer = base.ToPsdLayer(psdFile);
-			var sectionInfo = new AbstractLayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.ClosedFolder);
+			var sectionInfo = new LayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.ClosedFolder);
 			psdLayer.AdditionalInfo.Add(sectionInfo);
 			return psdLayer;
 		}
@@ -32,7 +32,7 @@ namespace com.utkaka.Psd.Layers {
 			endSectionLayer.Visible = true;
 			endSectionLayer.Masks = new MaskInfo();
 			endSectionLayer.BlendingRangesData = new BlendingRanges(endSectionLayer);
-			var sectionInfo = new AbstractLayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.SectionDivider);
+			var sectionInfo = new LayerSectionInfo("lsct", LayerSectionSubtype.Normal, LayerSectionType.SectionDivider);
 			endSectionLayer.AdditionalInfo.Add(sectionInfo);
 			psdFile.Layers.Add(endSectionLayer);
 		}

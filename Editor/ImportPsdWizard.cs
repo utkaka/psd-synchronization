@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using com.utkaka.Psd.Layers;
 using com.utkaka.Psd.PsdFiles;
 using TMPro;
@@ -26,6 +27,11 @@ namespace com.utkaka.PsdSynchronization.Editor {
 			var stream = File.OpenRead(_psdPath);
 			var psdFile = new PsdFile(stream, new LoadContext());
 			stream.Close();
+			
+			stream = File.OpenWrite(Path.Combine(Directory.GetParent(_psdPath)?.FullName, "Copy.psd"));
+			psdFile.Save(stream, Encoding.Default);
+			stream.Close();
+			
 
 			/*var stream = File.OpenRead(_psdPath);
 

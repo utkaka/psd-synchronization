@@ -65,20 +65,23 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 				case "Layr":
 				case "Lr16":
 				case "Lr32":
-					result = new InfoAbstractLayers(reader, psdFile, key, length);
+					result = new InfoLayers(reader, psdFile, key, length);
 					break;
 				case "lsct":
 				case "lsdk":
-					result = new AbstractLayerSectionInfo(reader, key, (int) length);
+					result = new LayerSectionInfo(reader, key, (int) length);
 					break;
 				case "luni":
-					result = new AbstractLayerUnicodeName(reader);
+					result = new LayerUnicodeName(reader);
 					break;
 				case "TySh":
 					result = new TypeToolInfo(reader);
 					break;
 				case "SoLd":
-					result = new PlacedAbstractLayerInfo(reader);
+					result = new PlacedLayerInfo(reader);
+					break;
+				case "lyid":
+					result = new LayerIdInfo(reader);
 					break;
 				case "lnkD":
 				case "lnkE":
@@ -87,7 +90,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 					result = new LinkedFilesInfo(key, reader, length);
 					break;
 				default:
-					result = new RawAbstractLayerInfo(reader, signature, key, length);
+					result = new RawLayerInfo(reader, signature, key, length);
 					break;
 			}
 

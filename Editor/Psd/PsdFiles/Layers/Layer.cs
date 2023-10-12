@@ -150,7 +150,7 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 			foreach (var adjustmentInfo in AdditionalInfo) {
 				switch (adjustmentInfo.Key) {
 					case "luni":
-						Name = ((AbstractLayerUnicodeName) adjustmentInfo).Name;
+						Name = ((LayerUnicodeName) adjustmentInfo).Name;
 						break;
 				}
 			}
@@ -196,15 +196,15 @@ namespace com.utkaka.Psd.PsdFiles.Layers {
 
 			// Create or update the Unicode layer name to be consistent with the
 			// ANSI layer name.
-			var layerUnicodeNames = AdditionalInfo.Where(x => x is AbstractLayerUnicodeName);
+			var layerUnicodeNames = AdditionalInfo.Where(x => x is LayerUnicodeName);
 			if (layerUnicodeNames.Count() > 1) {
 				throw new PsdInvalidException(
-					$"{nameof(Layer)} can only have one {nameof(AbstractLayerUnicodeName)}.");
+					$"{nameof(Layer)} can only have one {nameof(LayerUnicodeName)}.");
 			}
 
-			var layerUnicodeName = (AbstractLayerUnicodeName) layerUnicodeNames.FirstOrDefault();
+			var layerUnicodeName = (LayerUnicodeName) layerUnicodeNames.FirstOrDefault();
 			if (layerUnicodeName == null) {
-				layerUnicodeName = new AbstractLayerUnicodeName(Name);
+				layerUnicodeName = new LayerUnicodeName(Name);
 				AdditionalInfo.Add(layerUnicodeName);
 			} else if (layerUnicodeName.Name != Name) {
 				layerUnicodeName.Name = Name;

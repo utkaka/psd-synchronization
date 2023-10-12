@@ -366,7 +366,7 @@ namespace com.utkaka.Psd.PsdFiles {
 			foreach (var layerInfo in AdditionalInfo) {
 				switch (layerInfo.Key) {
 					case "LMsk":
-						GlobalLayerMaskData = ((RawAbstractLayerInfo) layerInfo).Data;
+						GlobalLayerMaskData = ((RawLayerInfo) layerInfo).Data;
 						break;
 				}
 			}
@@ -517,15 +517,15 @@ namespace com.utkaka.Psd.PsdFiles {
 		/// Verifies that any Additional Info layers are consistent.
 		/// </summary>
 		private void VerifyInfoLayers() {
-			var infoLayersCount = AdditionalInfo.Count(x => x is InfoAbstractLayers);
+			var infoLayersCount = AdditionalInfo.Count(x => x is InfoLayers);
 			if (infoLayersCount > 1) {
 				throw new PsdInvalidException(
-					$"Cannot have more than one {nameof(InfoAbstractLayers)} in a PSD file.");
+					$"Cannot have more than one {nameof(InfoLayers)} in a PSD file.");
 			}
 
 			if ((infoLayersCount > 0) && (Layers.Count == 0)) {
 				throw new PsdInvalidException(
-					$"{nameof(InfoAbstractLayers)} cannot exist when there are 0 layers.");
+					$"{nameof(InfoLayers)} cannot exist when there are 0 layers.");
 			}
 		}
 
@@ -537,12 +537,12 @@ namespace com.utkaka.Psd.PsdFiles {
 			int depth = 0;
 			foreach (var layer in Enumerable.Reverse(Layers)) {
 				var layerSectionInfo = layer.AdditionalInfo.SingleOrDefault(
-					x => x is AbstractLayerSectionInfo);
+					x => x is LayerSectionInfo);
 				if (layerSectionInfo == null) {
 					continue;
 				}
 
-				var sectionInfo = (AbstractLayerSectionInfo) layerSectionInfo;
+				var sectionInfo = (LayerSectionInfo) layerSectionInfo;
 				switch (sectionInfo.SectionType) {
 					case LayerSectionType.Layer:
 						break;
@@ -607,7 +607,7 @@ namespace com.utkaka.Psd.PsdFiles {
 				// Only one set of Layers can exist in the file.  If layers will be
 				// written to the Additional Info section, then the Layers section
 				// must be empty to avoid conflict.
-				var hasInfoLayers = AdditionalInfo.Exists(x => x is InfoAbstractLayers);
+				var hasInfoLayers = AdditionalInfo.Exists(x => x is InfoLayers);
 				if (!hasInfoLayers) {
 					SaveLayersData(writer);
 				}
