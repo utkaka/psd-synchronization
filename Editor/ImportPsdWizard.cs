@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using com.utkaka.PsdSynchronization.Editor.Psd;
@@ -59,6 +60,8 @@ namespace com.utkaka.PsdSynchronization.Editor {
 			} 
 			GUILayout.EndHorizontal();
 
+			_saveAssetsContext.ImportPrefabType =
+				(PsdPrefabType)EditorGUILayout.EnumPopup("Prefab Type", (Enum)_saveAssetsContext.ImportPrefabType);
 			_saveAssetsContext.RootObjectName =
 				EditorGUILayout.TextField("Root Object Name", _saveAssetsContext.RootObjectName);
 			_saveAssetsContext.WorkingSceneName =

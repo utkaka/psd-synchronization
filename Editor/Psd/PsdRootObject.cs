@@ -8,6 +8,7 @@ using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	[Serializable]
@@ -89,14 +90,30 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 		}
 
 		public void SaveAssets(SaveAssetsContext saveAssetsContext) {
+			var gameObject = CreateGameObject(saveAssetsContext);
+			
 			for (var i = 0; i < _linkedRootObjects.Count; i++) {
 				var linkedRootObject = _linkedRootObjects[i];
 				linkedRootObject.SaveAssets(saveAssetsContext);
 			}
 
-			for (var i = 0; i < _psdObjects.Count; i++) {
+			for (var i = _psdObjects.Count - 1; i >= 0; i--) {
 				var psdObject = _psdObjects[i];
-				psdObject.SaveAssets(_name, saveAssetsContext);
+				psdObject.SaveAssets(_name, gameObject, saveAssetsContext);
+			}
+		}
+
+		private GameObject CreateGameObject(SaveAssetsContext saveAssetsContext) {
+			var name = string.IsNullOrEmpty(_name) ? saveAssetsContext.RootObjectName : _name;
+			switch (saveAssetsContext.ImportPrefabType) {
+				case PsdPrefabType.World:
+					return new GameObject(name, typeof(SortingGroup)); 
+				case PsdPrefabType.UGUIWithoutCanvas:
+					return new GameObject(name, typeof(RectTransform));
+				case PsdPrefabType.UGUIWithCanvas:
+					return new GameObject(name, typeof(Canvas));
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 

@@ -54,9 +54,30 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_textRect = _textRect.ConvertToUnitySpace(psdFileLayer.PsdFile.ColumnCount, psdFileLayer.PsdFile.RowCount);
 		}
 
-		public override void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) {
-			base.SaveAssets(psdName, saveAssetsContext);
-			_imageObject.SaveAssets(psdName, saveAssetsContext);
+		public override void SaveAssets(string psdName, GameObject parentObject, SaveAssetsContext saveAssetsContext) {
+			var gameObject = CreateGameObject(saveAssetsContext);
+			gameObject.transform.SetParent(parentObject.transform);
+			
+			_imageObject.SaveAssets(psdName, gameObject, saveAssetsContext);
+		}
+		
+		protected override GameObject CreateGameObject(SaveAssetsContext saveAssetsContext) {
+			GameObject gameObject;
+			switch (saveAssetsContext.ImportPrefabType) {
+				case PsdPrefabType.World:
+					gameObject = new GameObject(Name);
+					gameObject.transform.localPosition = new Vector2(Rect.center.x / 100.0f, Rect.center.y/ 100.0f);
+					break;
+				case PsdPrefabType.UGUIWithoutCanvas:
+				case PsdPrefabType.UGUIWithCanvas:
+					gameObject = new GameObject(Name, typeof(RectTransform));
+					((RectTransform)gameObject.transform).sizeDelta = new Vector2(Rect.width, Rect.height);
+					gameObject.transform.localPosition = new Vector2(Rect.center.x, Rect.center.y);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+			return gameObject;
 		}
 
 		protected override Layer ToPsdLayer(PsdFile psdFile) {

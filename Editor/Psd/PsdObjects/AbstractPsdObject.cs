@@ -41,7 +41,9 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_rect = psdFileLayer.Rect.ToRect().ConvertToUnitySpace(psdWidth, psdHeight);
 		}
 
-		public virtual void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) { }
+		public virtual void SaveAssets(string psdName, GameObject parentObject, SaveAssetsContext saveAssetsContext) { }
+
+		protected abstract GameObject CreateGameObject(SaveAssetsContext saveAssetsContext);
 
 		public virtual void Write(PsdFile psdFile) {
 			psdFile.Layers.Add(ToPsdLayer(psdFile));

@@ -8,6 +8,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 	[Serializable]
@@ -23,7 +24,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_jobHandle = ImageDecoder.DecodeImage(psdFileLayer, _pixels);
 		}
 
-		public override void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) {
+		public override void SaveAssets(string psdName, GameObject parentObject, SaveAssetsContext saveAssetsContext) {
 			if (!_pixels.IsCreated) return;
 			_jobHandle.Complete();
 			var spritesFolder = string.IsNullOrEmpty(psdName)
@@ -38,6 +39,41 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			if (!Directory.Exists(assetParentDirectory)) Directory.CreateDirectory(assetParentDirectory);
 			File.WriteAllBytes(assetPath, texture.EncodeToPNG());
 			AssetDatabase.ImportAsset(assetPath);
+
+			var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
+			
+			var gameObject = CreateGameObject(saveAssetsContext);
+			gameObject.transform.SetParent(parentObject.transform);
+			switch (saveAssetsContext.ImportPrefabType) {
+				case PsdPrefabType.World:
+					gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
+					break;
+				case PsdPrefabType.UGUIWithoutCanvas:
+				case PsdPrefabType.UGUIWithCanvas:
+					gameObject.GetComponent<Image>().sprite = sprite;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+		
+		protected override GameObject CreateGameObject(SaveAssetsContext saveAssetsContext) {
+			GameObject gameObject;
+			switch (saveAssetsContext.ImportPrefabType) {
+				case PsdPrefabType.World:
+					gameObject = new GameObject(Name, typeof(SpriteRenderer));
+					gameObject.transform.localPosition = new Vector2(Rect.center.x / 100.0f, Rect.center.y/ 100.0f);
+					break;
+				case PsdPrefabType.UGUIWithoutCanvas:
+				case PsdPrefabType.UGUIWithCanvas:
+					gameObject = new GameObject(Name, typeof(Image));
+					((RectTransform)gameObject.transform).sizeDelta = new Vector2(Rect.width, Rect.height);
+					gameObject.transform.localPosition = new Vector2(Rect.center.x, Rect.center.y);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+			return gameObject;
 		}
 		
 		protected override Layer ToPsdLayer(PsdFile psdFile) {
