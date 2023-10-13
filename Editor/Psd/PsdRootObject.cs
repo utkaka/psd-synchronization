@@ -10,7 +10,12 @@ using com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects;
 using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd {
-	public class PsdRootObject : MonoBehaviour {
+	[Serializable]
+	public class PsdRootObject {
+		[SerializeField]
+		private string _id;
+		[SerializeField]
+		private string _name;
 		[SerializeField]
 		private ImageObject _baseImage;
 		[SerializeField]
@@ -18,14 +23,19 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 		[SerializeField]
 		private int _width;
 		[SerializeField]
+		private List<PsdRootObject> _linkedRootObjects;
+		[SerializeField]
 		private List<AbstractPsdObject> _psdObjects;
 		[SerializeField]
 		public ResolutionInfo _resolution;
 		[SerializeField]
 		public ImageCompression _imageCompression;
+		
+		public PsdRootObject(string id, string name, Stream input, Context context) : this(id, name, new PsdFile(input, context)) { }
 
-		public PsdRootObject(Stream input, Context context) {
-			var psdFile = new PsdFile(input, context);
+		public PsdRootObject(string id, string name, PsdFile psdFile) {
+			_id = id;
+			_name = name;
 			// Multichannel images are loaded by processing each channel as a
 			// grayscale layer.
 			if (psdFile.ColorMode == PsdColorMode.Multichannel) {
@@ -38,9 +48,21 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 			_imageCompression = psdFile.ImageCompression;
 			_resolution = psdFile.Resolution;
 			_baseImage = new ImageObject(psdFile.BaseLayer, null);
+			_linkedRootObjects = new List<PsdRootObject>();
 			_psdObjects = new List<AbstractPsdObject>();
 
 			psdFile.VerifyLayerSections();
+
+			foreach (var additionalInfo in psdFile.AdditionalInfo) {
+				if (additionalInfo is not LinkedFilesInfo linkedFilesInfo) continue;
+				foreach (var linkedFile in linkedFilesInfo.LinkedFiles) {
+					if (linkedFile.File == null) continue;
+					_linkedRootObjects.Add(new PsdRootObject(linkedFile.ID,
+						Path.GetFileNameWithoutExtension(linkedFile.Name.Remove(linkedFile.Name.Length - 1)),
+						linkedFile.File));
+				}
+			}
+
 			GroupObject parentObject = null;
 			for (var i = psdFile.Layers.Count - 1; i >= 0; i--) {
 				var psdFileLayer = psdFile.Layers[i];
@@ -65,7 +87,19 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 				if (psdObject is GroupObject groupObject) parentObject = groupObject;
 			}
 		}
-		
+
+		public void SaveAssets(SaveAssetsContext saveAssetsContext) {
+			for (var i = 0; i < _linkedRootObjects.Count; i++) {
+				var linkedRootObject = _linkedRootObjects[i];
+				linkedRootObject.SaveAssets(saveAssetsContext);
+			}
+
+			for (var i = 0; i < _psdObjects.Count; i++) {
+				var psdObject = _psdObjects[i];
+				psdObject.SaveAssets(_name, saveAssetsContext);
+			}
+		}
+
 		public void Save(Stream output, Context context) {
 			/*var psdVersion = ((input.Height > 30000) || (input.Width > 30000))
 				? PsdFileVersion.PsbLargeDocument

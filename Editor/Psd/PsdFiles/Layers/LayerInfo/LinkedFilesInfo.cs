@@ -23,6 +23,8 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 		
         private readonly List<LinkedFile> _linkedFiles;
 
+        public List<LinkedFile> LinkedFiles => _linkedFiles;
+
         public LinkedFilesInfo(string key, PsdBinaryReader reader, long length) {
             _key = key;
             _linkedFiles = new List<LinkedFile>();
@@ -67,6 +69,12 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
         private readonly string _childDocumentID;
         private readonly double _assetModTime;
         private readonly bool _assetLockedState;
+
+        public string ID => _id;
+
+        public string Name => _name;
+
+        public PsdFile File => _file;
 
         public LinkedFile(PsdBinaryReader reader, ulong size) {
 			var startPosition = reader.BaseStream.Position;

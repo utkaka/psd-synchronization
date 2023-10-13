@@ -26,6 +26,12 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			psdLayer.AdditionalInfo.Add(sectionInfo);
 			return psdLayer;
 		}
+		
+		public override void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) {
+			foreach (var child in _children) {
+				child.SaveAssets(psdName, saveAssetsContext);
+			}
+		}
 
 		public override void Write(PsdFile psdFile) {
 			base.Write(psdFile);

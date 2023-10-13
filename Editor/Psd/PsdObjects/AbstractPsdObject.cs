@@ -23,8 +23,10 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		[SerializeField]
 		private Rect _rect;
 
+		public string Name => _name;
 		public GroupObject ParentObject => _parentObject;
 		public float Opacity => _opacity * _parentObject?.Opacity ?? _opacity;
+		public Rect Rect => _rect;
 
 		public AbstractPsdObject(Layer psdFileLayer, GroupObject parentObject) {
 			_id = (psdFileLayer.AdditionalInfo.FirstOrDefault(i => i is LayerIdInfo) as LayerIdInfo)?.Id ?? 0;
@@ -39,7 +41,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_rect = psdFileLayer.Rect.ToRect().ConvertToUnitySpace(psdWidth, psdHeight);
 		}
 
-		public virtual void SaveAssets(string path) { }
+		public virtual void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) { }
 
 		public virtual void Write(PsdFile psdFile) {
 			psdFile.Layers.Add(ToPsdLayer(psdFile));

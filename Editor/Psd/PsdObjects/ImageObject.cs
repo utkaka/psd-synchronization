@@ -1,10 +1,12 @@
 using System;
+using System.IO;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using Unity.Jobs;
+using UnityEditor;
 using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
@@ -16,14 +18,26 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		
 		public ImageObject(Layer psdFileLayer, GroupObject parentObject) : base(psdFileLayer, parentObject){
 			psdFileLayer.CreateMissingChannels();
+			if (psdFileLayer.Rect.Width <= 0 || psdFileLayer.Rect.Height <= 0) return;
 			_pixels = new NativeArray<Color32>(psdFileLayer.Rect.Width * psdFileLayer.Rect.Height, Allocator.TempJob);
 			_jobHandle = ImageDecoder.DecodeImage(psdFileLayer, _pixels);
 		}
 
-		public override void SaveAssets(string path) {
+		public override void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) {
+			if (!_pixels.IsCreated) return;
 			_jobHandle.Complete();
-			//TODO: Save sprite
+			var spritesFolder = string.IsNullOrEmpty(psdName)
+				? saveAssetsContext.SpritesFolderName
+				: Path.Combine(saveAssetsContext.SpritesFolderName, psdName);
+			var assetParentDirectory = Path.Combine("Assets", saveAssetsContext.BasePath, spritesFolder);
+			var assetPath = $"{Path.Combine(assetParentDirectory, Name)}.png";
+			var texture = new Texture2D((int)Rect.width, (int)Rect.height, TextureFormat.RGBA32, false);
+			texture.SetPixels32(_pixels.ToArray());
 			_pixels.Dispose();
+			texture.Apply();
+			if (!Directory.Exists(assetParentDirectory)) Directory.CreateDirectory(assetParentDirectory);
+			File.WriteAllBytes(assetPath, texture.EncodeToPNG());
+			AssetDatabase.ImportAsset(assetPath);
 		}
 		
 		protected override Layer ToPsdLayer(PsdFile psdFile) {

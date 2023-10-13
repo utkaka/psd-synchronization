@@ -54,9 +54,9 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_textRect = _textRect.ConvertToUnitySpace(psdFileLayer.PsdFile.ColumnCount, psdFileLayer.PsdFile.RowCount);
 		}
 
-		public override void SaveAssets(string path) {
-			base.SaveAssets(path);
-			_imageObject.SaveAssets(path);
+		public override void SaveAssets(string psdName, SaveAssetsContext saveAssetsContext) {
+			base.SaveAssets(psdName, saveAssetsContext);
+			_imageObject.SaveAssets(psdName, saveAssetsContext);
 		}
 
 		protected override Layer ToPsdLayer(PsdFile psdFile) {

@@ -15,7 +15,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing {
 		}
 		
 		public int GetInLayerY(int index) {
-			return (int)math.floor((float)index / _width);
+			return index / _width;
 		}
 		
 		public int GetIndexInvertedByY(int inLayerX, int inLayerY) {
