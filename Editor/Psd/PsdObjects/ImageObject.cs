@@ -19,7 +19,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		public ImageObject(Layer psdFileLayer, GroupObject parentObject) : base(psdFileLayer, parentObject){
 			psdFileLayer.CreateMissingChannels();
 			if (psdFileLayer.Rect.Width <= 0 || psdFileLayer.Rect.Height <= 0) return;
-			_pixels = new NativeArray<Color32>(psdFileLayer.Rect.Width * psdFileLayer.Rect.Height, Allocator.TempJob);
+			_pixels = new NativeArray<Color32>(psdFileLayer.Rect.Width * psdFileLayer.Rect.Height, Allocator.Persistent);
 			_jobHandle = ImageDecoder.DecodeImage(psdFileLayer, _pixels);
 		}
 

@@ -30,7 +30,8 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		public override void SaveAssets(string psdName, GameObject parentObject, SaveAssetsContext saveAssetsContext) {
 			var gameObject = CreateGameObject(saveAssetsContext);
 			gameObject.transform.SetParent(parentObject.transform);
-			foreach (var child in _children) {
+			for (var i = _children.Count - 1; i >= 0; i--) {
+				var child = _children[i];
 				child.SaveAssets(psdName, gameObject, saveAssetsContext);
 			}
 		}
