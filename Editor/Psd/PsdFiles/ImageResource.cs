@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Utils;
 using UnityEngine;
-using UnityEngine.Serialization;
 using static System.FormattableString;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {

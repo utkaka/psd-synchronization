@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
 
@@ -89,7 +88,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
             _name = reader.ReadUnicodeString();
             _fileType  = reader.ReadAsciiChars(4).Trim();
             _fileCreator  = reader.ReadAsciiChars(4).Trim();
-            var dataSize  = reader.ReadUInt64();
+            var dataSize  = (long)reader.ReadUInt64();
             _hasFileOpenDescriptor = reader.ReadBoolean();
 
             if (_hasFileOpenDescriptor) {
@@ -112,17 +111,20 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
                 _date = new DateTime(year, month, day, hour, minute, (int)Math.Floor(seconds));
             }
 
-            byte[] fileData = null;
-            var fileSize = _type == "liFE" ? reader.ReadUInt64() : 0;
+            var fileSize = _type == "liFE" ? (long)reader.ReadUInt64() : 0;
             if (_type == "liFA") reader.SkipBytes(8);
-            if (_type == "liFD") fileData = reader.ReadBytes(dataSize); // seems to be a typo in docs
+            if (_type == "liFD") {
+                var start = reader.BaseStream.Position;
+                _file = new PsdFile(reader);
+                reader.BaseStream.Position = start + dataSize;
+            }
             if (_version >= 5) _childDocumentID = reader.ReadUnicodeString();
             if (_version >= 6) _assetModTime = reader.ReadDouble();
             if (_version >= 7) _assetLockedState = reader.ReadBoolean();
-            if (_type == "liFE" && _version == 2) fileData = reader.ReadBytes(fileSize);
-
-            if (fileData != null) {
-                _file = new PsdFile(new MemoryStream(fileData), new Context());
+            if (_type == "liFE" && _version == 2) {
+                var start = reader.BaseStream.Position;
+                _file = new PsdFile(reader);
+                reader.BaseStream.Position = start + fileSize;
             }
             while (size % 4 > 0) size++;
             reader.BaseStream.Position = startPosition + (long)size;

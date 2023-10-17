@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
@@ -57,9 +56,13 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 			AdditionalInfo = new List<AbstractLayerInfo>();
 		}
 
-		public PsdFile(Stream stream, Context context)
-			: this() {
-			Load(stream, context);
+		public PsdFile(Stream stream, Context context) : this() {
+			var reader = new PsdBinaryReader(stream, context);
+			Load(reader);
+		}
+		
+		public PsdFile(PsdBinaryReader reader) : this() {
+			Load(reader);
 		}
 
 		#endregion
@@ -68,9 +71,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 
 		//internal Context Context { get; private set; }
 
-		private void Load(Stream stream, Context context) {
-			var reader = new PsdBinaryReader(stream, context);
-
+		private void Load(PsdBinaryReader reader) {
 			LoadHeader(reader);
 			LoadColorModeData(reader);
 			LoadImageResources(reader);

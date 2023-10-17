@@ -15,7 +15,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 using System.Text;
-using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using UnityEngine;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {

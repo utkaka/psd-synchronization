@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	public class SaveAssetsContext {
 		public PsdPrefabType ImportPrefabType { get; set; }

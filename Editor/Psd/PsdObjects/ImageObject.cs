@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding;
-using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Encoding;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;

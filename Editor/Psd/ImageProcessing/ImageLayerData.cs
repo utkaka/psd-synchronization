@@ -1,5 +1,3 @@
-using Unity.Mathematics;
-
 namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing {
 	public struct ImageLayerData {
 		private int _width;
