@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
@@ -23,7 +24,11 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		[SerializeField]
 		private Rect _rect;
 
-		public string Name => _name;
+		public string Name {
+			get => _name;
+			protected set => _name = value;
+		}
+
 		public GroupObject ParentObject => _parentObject;
 		public float Opacity => _opacity * _parentObject?.Opacity ?? _opacity;
 		public Rect Rect => _rect;
@@ -41,9 +46,13 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_rect = psdFileLayer.Rect.ToRect().ConvertToUnitySpace(psdWidth, psdHeight);
 		}
 
-		public virtual void SaveAssets(string psdName, GameObject parentObject, SaveAssetsContext saveAssetsContext) { }
+		public Transform CreateAsset(Transform parentObject, AssetContext assetContext) {
+			var transform = InternalCreateAsset(parentObject, assetContext);
+			transform?.gameObject.SetActive(_visible);
+			return transform;
+		}
 
-		protected abstract GameObject CreateGameObject(SaveAssetsContext saveAssetsContext);
+		protected abstract Transform InternalCreateAsset(Transform parentObject, AssetContext assetContext);
 
 		public virtual void Write(PsdFile psdFile) {
 			psdFile.Layers.Add(ToPsdLayer(psdFile));

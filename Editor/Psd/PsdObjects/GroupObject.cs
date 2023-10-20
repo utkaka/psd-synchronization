@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
@@ -26,33 +27,14 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			psdLayer.AdditionalInfo.Add(sectionInfo);
 			return psdLayer;
 		}
-		
-		public override void SaveAssets(string psdName, GameObject parentObject, SaveAssetsContext saveAssetsContext) {
-			var gameObject = CreateGameObject(saveAssetsContext);
-			gameObject.transform.SetParent(parentObject.transform);
+
+		protected override Transform InternalCreateAsset(Transform parentObject, AssetContext assetContext) {
+			var transform = assetContext.CreateGroupObject(Name, Rect, parentObject);
 			for (var i = _children.Count - 1; i >= 0; i--) {
 				var child = _children[i];
-				child.SaveAssets(psdName, gameObject, saveAssetsContext);
+				child.CreateAsset(transform, assetContext);
 			}
-		}
-
-		protected override GameObject CreateGameObject(SaveAssetsContext saveAssetsContext) {
-			GameObject gameObject;
-			switch (saveAssetsContext.ImportPrefabType) {
-				case PsdPrefabType.World:
-					gameObject = new GameObject(Name, typeof(SortingLayer));
-					gameObject.transform.localPosition = new Vector2(Rect.center.x / 100.0f, Rect.center.y/ 100.0f);
-					break;
-				case PsdPrefabType.UGUIWithoutCanvas:
-				case PsdPrefabType.UGUIWithCanvas:
-					gameObject = new GameObject(Name, typeof(RectTransform));
-					((RectTransform)gameObject.transform).sizeDelta = new Vector2(Rect.width, Rect.height);
-					gameObject.transform.localPosition = new Vector2(Rect.center.x, Rect.center.y);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-			return gameObject;
+			return transform;
 		}
 
 		public override void Write(PsdFile psdFile) {

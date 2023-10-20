@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -48,7 +50,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 			_height = psdFile.RowCount;
 			_imageCompression = psdFile.ImageCompression;
 			_resolution = psdFile.Resolution;
-			_baseImage = new ImageObject(psdFile.BaseLayer, null);
+			_baseImage = new ImageObject(psdFile.BaseLayer, null, _name);
 			_linkedRootObjects = new List<PsdRootObject>();
 			_psdObjects = new List<AbstractPsdObject>();
 
@@ -71,8 +73,10 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 					.SingleOrDefault(x => x is LayerSectionInfo);
 				AbstractPsdObject psdObject = null;
 				if (sectionInfo == null || sectionInfo.SectionType == LayerSectionType.Layer) {
-					if (psdFileLayer.AdditionalInfo.FirstOrDefault(i => i is TypeToolInfo) != null) {
+					if (psdFileLayer.AdditionalInfo.FirstOrDefault(l => l is TypeToolInfo) != null) {
 						psdObject = new TextObject(psdFileLayer, parentObject);
+					} else if (psdFileLayer.AdditionalInfo.FirstOrDefault(l => l is PlacedLayerInfo) != null) {
+						psdObject = new LinkedObject(psdFileLayer, parentObject);
 					} else {
 						psdObject = new ImageObject(psdFileLayer, parentObject);
 					}
@@ -89,31 +93,29 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 			}
 		}
 
-		public void SaveAssets(SaveAssetsContext saveAssetsContext) {
-			var gameObject = CreateGameObject(saveAssetsContext);
-			
-			for (var i = 0; i < _linkedRootObjects.Count; i++) {
-				var linkedRootObject = _linkedRootObjects[i];
-				linkedRootObject.SaveAssets(saveAssetsContext);
-			}
-
-			for (var i = _psdObjects.Count - 1; i >= 0; i--) {
-				var psdObject = _psdObjects[i];
-				psdObject.SaveAssets(_name, gameObject, saveAssetsContext);
-			}
+		public void CreateMainAsset(AssetContext assetContext) {
+			var root = assetContext.CreateRootObject(_name);
+			//_baseImage.CreateAsset(root, assetContext);
+			CreateAssets(assetContext, root, "");
+			PrefabUtility.ApplyPrefabInstance(root.gameObject, InteractionMode.AutomatedAction);
+		}
+		
+		private void CreateLinkedAsset(AssetContext assetContext, string path) {
+			var root = assetContext.CreateLinkedRootObject(_id, _name, path, new Vector2(_width, _height), _baseImage);
+			if (root == null) return;
+			path = Path.Combine(path, _name);
+			CreateAssets(assetContext, root, path);
+			PrefabUtility.ApplyPrefabInstance(root.gameObject, InteractionMode.AutomatedAction);
 		}
 
-		private GameObject CreateGameObject(SaveAssetsContext saveAssetsContext) {
-			var name = string.IsNullOrEmpty(_name) ? saveAssetsContext.RootObjectName : _name;
-			switch (saveAssetsContext.ImportPrefabType) {
-				case PsdPrefabType.World:
-					return new GameObject(name, typeof(SortingGroup)); 
-				case PsdPrefabType.UGUIWithoutCanvas:
-					return new GameObject(name, typeof(RectTransform));
-				case PsdPrefabType.UGUIWithCanvas:
-					return new GameObject(name, typeof(Canvas));
-				default:
-					throw new ArgumentOutOfRangeException();
+		private void CreateAssets(AssetContext assetContext, Transform parent, string path) {
+			for (var i = 0; i < _linkedRootObjects.Count; i++) {
+				var linkedRootObject = _linkedRootObjects[i];
+				linkedRootObject.CreateLinkedAsset(assetContext, path);
+			}
+			for (var i = _psdObjects.Count - 1; i >= 0; i--) {
+				var psdObject = _psdObjects[i];
+				psdObject.CreateAsset(parent, assetContext);
 			}
 		}
 

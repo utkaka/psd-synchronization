@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using com.utkaka.PsdSynchronization.Editor.Psd;
+using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using UnityEditor;
 using UnityEngine;
@@ -9,7 +10,7 @@ using Debug = UnityEngine.Debug;
 namespace com.utkaka.PsdSynchronization.Editor {
 	public class ImportPsdWizard : ScriptableWizard {
 		private static string _lastPsdPath;
-		private SaveAssetsContext _saveAssetsContext;
+		private AssetContextConfig _assetContextConfig;
 		private string _psdPath;
 
 		[MenuItem("Assets/Import PSD file")]
@@ -19,9 +20,10 @@ namespace com.utkaka.PsdSynchronization.Editor {
 			_lastPsdPath = Directory.GetParent(psdPath)?.FullName;
 			var wizard = DisplayWizard<ImportPsdWizard>("Import PSD", "Save", "");
 			var psdFileName = Path.GetFileNameWithoutExtension(psdPath);
-			wizard._saveAssetsContext = new SaveAssetsContext {
+			wizard._assetContextConfig = new AssetContextConfig {
 				RootObjectName = psdFileName,
 				WorkingSceneName = $"{psdFileName} PSD Scene",
+				PrefabsFolderName = "Prefabs",
 				SpritesFolderName = "Sprites"
 			};
 			wizard._psdPath = psdPath;
@@ -34,11 +36,12 @@ namespace com.utkaka.PsdSynchronization.Editor {
 				: new Context(); 
 
 			var stream = File.OpenRead(_psdPath);
+			/*var psdFile = new PsdFile(stream, context);
 			
-			var psdObject = new PsdRootObject("", "", stream, context);
+			return;*/
+			var psdObject = new PsdRootObject("", _assetContextConfig.RootObjectName, stream, context);
 			stream.Close();
-			
-			psdObject.SaveAssets(_saveAssetsContext);
+			psdObject.CreateMainAsset(new AssetContext(_assetContextConfig));
 		}
 
 		protected override bool DrawWizardGUI() {
@@ -47,31 +50,33 @@ namespace com.utkaka.PsdSynchronization.Editor {
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Save path", EditorStyles.label, GUILayout.Width(EditorGUIUtility.labelWidth - 1),
 				GUILayout.Height(EditorGUIUtility.singleLineHeight));
-			GUILayout.Label(string.IsNullOrEmpty(_saveAssetsContext.BasePath) ? "..." : $"Assets/{_saveAssetsContext.BasePath}");
+			GUILayout.Label(string.IsNullOrEmpty(_assetContextConfig.BasePath) ? "..." : $"Assets/{_assetContextConfig.BasePath}");
 			if (GUILayout.Button("Browse...", GUILayout.ExpandWidth(false),
 				    GUILayout.Height(EditorGUIUtility.singleLineHeight))) {
 				var newPath = EditorUtility.SaveFolderPanel("Where to save assets", "Assets",
-					_saveAssetsContext.RootObjectName);
+					_assetContextConfig.RootObjectName);
 				if (!string.IsNullOrEmpty(newPath)) {
-					_saveAssetsContext.BasePath = Path.GetRelativePath(Application.dataPath, newPath);
+					_assetContextConfig.BasePath = Path.GetRelativePath(Application.dataPath, newPath);
 				}
 				GUIUtility.ExitGUI();
 			} 
 			GUILayout.EndHorizontal();
 
-			_saveAssetsContext.ImportPrefabType =
-				(PsdPrefabType)EditorGUILayout.EnumPopup("Prefab Type", (Enum)_saveAssetsContext.ImportPrefabType);
-			_saveAssetsContext.RootObjectName =
-				EditorGUILayout.TextField("Root Object Name", _saveAssetsContext.RootObjectName);
-			_saveAssetsContext.WorkingSceneName =
-				EditorGUILayout.TextField("Working Scene Name", _saveAssetsContext.WorkingSceneName);
-			_saveAssetsContext.SpritesFolderName =
-				EditorGUILayout.TextField("Sprites Folder Name", _saveAssetsContext.SpritesFolderName);
+			_assetContextConfig.ImportPrefabMode =
+				(ImportPrefabMode)EditorGUILayout.EnumPopup("Import Prefab Mode", _assetContextConfig.ImportPrefabMode);
+			_assetContextConfig.RootObjectName =
+				EditorGUILayout.TextField("Root Object Name", _assetContextConfig.RootObjectName);
+			_assetContextConfig.WorkingSceneName =
+				EditorGUILayout.TextField("Working Scene Name", _assetContextConfig.WorkingSceneName);
+			_assetContextConfig.PrefabsFolderName =
+				EditorGUILayout.TextField("Prefabs Folder Name", _assetContextConfig.PrefabsFolderName);
+			_assetContextConfig.SpritesFolderName =
+				EditorGUILayout.TextField("Sprites Folder Name", _assetContextConfig.SpritesFolderName);
 			
 			
 			GUILayout.Space(10);
 			
-			if (string.IsNullOrEmpty(_saveAssetsContext.BasePath)) {
+			if (string.IsNullOrEmpty(_assetContextConfig.BasePath)) {
 				errorString = "Please specify save path";
 				isValid = false;
 			} else {
