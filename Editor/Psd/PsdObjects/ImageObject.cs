@@ -32,7 +32,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		protected override Transform InternalCreateAsset(Transform parentObject, AssetContext assetContext) {
 			if (!_pixels.IsCreated) return null;
 			_jobHandle.Complete();
-			var transform = assetContext.CreateImageObject(Name, Rect, parentObject, _pixels);
+			var transform = assetContext.CreateImageObject(Name, Rect, parentObject, _pixels, Opacity);
 			_pixels.Dispose();
 			return transform;
 		}

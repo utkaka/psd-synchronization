@@ -75,7 +75,8 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			return transform;
 		}
 
-		public Transform CreateImageObject(string name, Rect rect, Transform parent, NativeArray<Color32> pixels) {
+		public Transform CreateImageObject(string name, Rect rect, Transform parent, NativeArray<Color32> pixels,
+			float opacity) {
 			var spritesFolder = "";
 			var tempParent = parent;
 			while (tempParent != null) {
@@ -93,16 +94,22 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 
 			var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
 			Transform transform;
+			var color = Color.white;
+			color.a = opacity;
 			switch (_config.ImportPrefabMode) {
 				case ImportPrefabMode.World:
 					transform = CreateGameObject(name, rect, parent, typeof(SpriteRenderer));
-					transform.GetComponent<SpriteRenderer>().sprite = sprite;
+					var spriteRenderer = transform.GetComponent<SpriteRenderer>(); 
+					spriteRenderer.sprite = sprite;
+					spriteRenderer.color = color;
 					break;
 				case ImportPrefabMode.UGUIWithoutCanvas:
 				case ImportPrefabMode.UGUIWithCanvas:
 					transform = CreateGameObject(name, rect, parent, typeof(Image));
 					((RectTransform)transform).sizeDelta = new Vector2(rect.width, rect.height);
-					transform.GetComponent<Image>().sprite = sprite;
+					var image = transform.GetComponent<Image>();
+					image.sprite = sprite;
+					image.color = color;
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
