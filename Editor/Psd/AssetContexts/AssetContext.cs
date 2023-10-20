@@ -67,7 +67,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 		
 		public Transform CreateGroupObject(string name, Rect rect, Transform parent) {
 			var transform = _config.ImportPrefabMode switch {
-				ImportPrefabMode.World => CreateGameObject(name, rect, parent, typeof(SortingGroup)),
+				ImportPrefabMode.World => CreateGameObject(name, rect, parent),
 				ImportPrefabMode.UGUIWithoutCanvas => CreateGameObject(name, rect, parent, typeof(RectTransform)),
 				ImportPrefabMode.UGUIWithCanvas => CreateGameObject(name, rect, parent, typeof(RectTransform)),
 				_ => throw new ArgumentOutOfRangeException()
