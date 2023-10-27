@@ -91,6 +91,10 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			if (!Directory.Exists(spritesFolder)) Directory.CreateDirectory(spritesFolder);
 			File.WriteAllBytes(assetPath, texture.EncodeToPNG());
 			AssetDatabase.ImportAsset(assetPath);
+			var importer = (TextureImporter)AssetImporter.GetAtPath(assetPath);
+			importer.textureType = TextureImporterType.Sprite;
+			EditorUtility.SetDirty(importer);
+			importer.SaveAndReimport();
 
 			var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
 			Transform transform;
