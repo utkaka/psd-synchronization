@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
@@ -36,6 +37,11 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		public AbstractPsdObject(Layer psdFileLayer, GroupObject parentObject) {
 			_id = (psdFileLayer.AdditionalInfo.FirstOrDefault(i => i is LayerIdInfo) as LayerIdInfo)?.Id ?? 0;
 			_name = psdFileLayer.Name;
+			if (!string.IsNullOrEmpty(_name)) {
+				_name = string.Join("_", _name.Split(Path.GetInvalidFileNameChars()));
+				_name = _name.Replace('/', '_');	
+				_name = _name.Replace('\\', '_');	
+			}
 			_parentObject = parentObject;
 			_visible = psdFileLayer.Visible;
 			_opacity = psdFileLayer.Opacity / 255.0f;

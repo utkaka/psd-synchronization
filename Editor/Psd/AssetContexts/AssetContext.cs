@@ -58,8 +58,9 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			}
 			var prefabFolder = Path.Combine(_prefabsFolder, path);
 			if (!Directory.Exists(prefabFolder)) Directory.CreateDirectory(prefabFolder);
+			var prefabPath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(prefabFolder, $"{name}.prefab"));
 			var linkedPrefab = new LinkedPrefab(PrefabUtility.SaveAsPrefabAssetAndConnect(transform.gameObject,
-				Path.Combine(prefabFolder, $"{name}.prefab"),
+				prefabPath,
 				InteractionMode.AutomatedAction), originalSize);
 			_linkedObjects.Add(id, linkedPrefab);
 			return _config.ImportLinkedObjectsMode == ImportLinkedObjectsMode.FullInnerLayers ? transform : null;
