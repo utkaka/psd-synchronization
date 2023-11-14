@@ -11,7 +11,7 @@ using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements.Ref
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements {
 	public class ReferenceElement : AbstractDescriptorElement {
-		public const string OSType = "obj";
+		public const string OSType = "obj ";
 		
 		private readonly AbstractReferenceElement[] _items;
 		protected override string ElementType => OSType;
