@@ -40,7 +40,8 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			if (!string.IsNullOrEmpty(_name)) {
 				_name = string.Join("_", _name.Split(Path.GetInvalidFileNameChars()));
 				_name = _name.Replace('/', '_');	
-				_name = _name.Replace('\\', '_');	
+				_name = _name.Replace('\\', '_');
+				_name = _name.Trim();
 			}
 			_parentObject = parentObject;
 			_visible = psdFileLayer.Visible;

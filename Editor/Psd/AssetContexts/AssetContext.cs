@@ -129,8 +129,11 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			    linkedPrefab.Prefab.transform.childCount == 0) {
 				var prefabTransform = ((GameObject) PrefabUtility.InstantiatePrefab(linkedPrefab.Prefab))
 					.GetComponent<Transform>();
+				
 				imageObject.CreateAsset(prefabTransform, this);
-				prefabTransform.GetChild(0).localPosition = Vector3.zero;
+				if (prefabTransform.childCount > 0) {
+					prefabTransform.GetChild(0).localPosition = Vector3.zero;	
+				}
 				PrefabUtility.ApplyPrefabInstance(prefabTransform.gameObject, InteractionMode.AutomatedAction);
 				Object.DestroyImmediate(prefabTransform.gameObject);
 			}
