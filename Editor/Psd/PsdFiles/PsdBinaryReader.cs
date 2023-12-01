@@ -31,6 +31,8 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 
 		public Stream BaseStream => _reader.BaseStream;
 
+		public Context Context => _context;
+
 		public PsdBinaryReader(Stream stream, PsdBinaryReader reader)
 			: this(stream, reader._context) { }
 

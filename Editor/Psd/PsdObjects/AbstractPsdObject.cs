@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
+using com.utkaka.PsdSynchronization.Editor.Psd.Extensions;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
@@ -32,17 +33,14 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 
 		public GroupObject ParentObject => _parentObject;
 		public float Opacity => _opacity * _parentObject?.Opacity ?? _opacity;
-		public Rect Rect => _rect;
+		public Rect Rect {
+			get => _rect;
+			protected set => _rect = value;
+		}
 
 		public AbstractPsdObject(Layer psdFileLayer, GroupObject parentObject) {
 			_id = (psdFileLayer.AdditionalInfo.FirstOrDefault(i => i is LayerIdInfo) as LayerIdInfo)?.Id ?? 0;
-			_name = psdFileLayer.Name;
-			if (!string.IsNullOrEmpty(_name)) {
-				_name = string.Join("_", _name.Split(Path.GetInvalidFileNameChars()));
-				_name = _name.Replace('/', '_');	
-				_name = _name.Replace('\\', '_');
-				_name = _name.Trim();
-			}
+			_name = FixName(psdFileLayer.Name);
 			_parentObject = parentObject;
 			_visible = psdFileLayer.Visible;
 			_opacity = psdFileLayer.Opacity / 255.0f;
@@ -63,6 +61,15 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 
 		public virtual void Write(PsdFile psdFile) {
 			psdFile.Layers.Add(ToPsdLayer(psdFile));
+		}
+
+		public static string FixName(string name) {
+			if (string.IsNullOrEmpty(name)) return name;
+			name = string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
+			name = name.Replace('/', '_');	
+			name = name.Replace('\\', '_');
+			name = name.Trim();
+			return name;
 		}
 
 		protected virtual Layer ToPsdLayer(PsdFile psdFile) {

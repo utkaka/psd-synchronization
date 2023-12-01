@@ -13,7 +13,6 @@ using Object = UnityEngine.Object;
 namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 	public class AssetContext {
 		private readonly AssetContextConfig _config;
-		private readonly Transform _linkedObjectsRoot;
 		private Dictionary<string, LinkedPrefab> _linkedObjects;
 		private readonly string _prefabsFolder;
 
@@ -24,9 +23,6 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			var scenePath = $"{Path.Combine("Assets", _config.BasePath, scene.name)}.unity";
 			EditorSceneManager.SaveScene(scene, scenePath);
 			EditorSceneManager.OpenScene(scenePath);
-			_linkedObjectsRoot = CreateGameObject("Linked Objects",
-				_config.ImportPrefabMode != ImportPrefabMode.World ? typeof(Canvas) : null);
-			_linkedObjectsRoot.gameObject.SetActive(false);
 			_linkedObjects = new Dictionary<string, LinkedPrefab>();
 			_prefabsFolder = Path.Combine("Assets", _config.BasePath, _config.PrefabsFolderName);
 			if (!Directory.Exists(_prefabsFolder)) Directory.CreateDirectory(_prefabsFolder);
@@ -45,17 +41,9 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			return root;
 		}
 
-		public Transform CreateLinkedRootObject(string id, string name, string path, Vector2 originalSize, ImageObject baseImage) {
-			if (_linkedObjects.ContainsKey(id)) return null;
-			var transform = _config.ImportPrefabMode switch {
-				ImportPrefabMode.World => CreateGameObject(name, Rect.zero, _linkedObjectsRoot),
-				ImportPrefabMode.UGUIWithoutCanvas => CreateGameObject(name,  Rect.zero, _linkedObjectsRoot, typeof(RectTransform)),
-				ImportPrefabMode.UGUIWithCanvas => CreateGameObject(name,  Rect.zero, _linkedObjectsRoot, typeof(RectTransform)),
-				_ => throw new ArgumentOutOfRangeException()
-			};
-			if (_config.ImportLinkedObjectsMode == ImportLinkedObjectsMode.SingleImageFromInnerLayers) {
-				baseImage.CreateAsset(transform, this);
-			}
+		public void CreateLinkedRootObject(string id, string name, string path, Vector2 originalSize, ImageObject baseImage) {
+			if (_linkedObjects.ContainsKey(id)) return;
+			var transform = baseImage.CreateAsset(null, this);
 			var prefabFolder = Path.Combine(_prefabsFolder, path);
 			if (!Directory.Exists(prefabFolder)) Directory.CreateDirectory(prefabFolder);
 			var prefabPath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(prefabFolder, $"{name}.prefab"));
@@ -63,7 +51,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 				prefabPath,
 				InteractionMode.AutomatedAction), originalSize);
 			_linkedObjects.Add(id, linkedPrefab);
-			return _config.ImportLinkedObjectsMode == ImportLinkedObjectsMode.FullInnerLayers ? transform : null;
+			Object.DestroyImmediate(transform.gameObject);
 		}
 		
 		public Transform CreateGroupObject(string name, Rect rect, Transform parent) {
@@ -85,11 +73,11 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 				tempParent = tempParent.parent;
 			}
 			spritesFolder = Path.Combine(Path.Combine("Assets", _config.BasePath, _config.SpritesFolderName), spritesFolder);
-			var assetPath = $"{Path.Combine(spritesFolder, name)}.png";
+			if (!Directory.Exists(spritesFolder)) Directory.CreateDirectory(spritesFolder);
+			var assetPath = AssetDatabase.GenerateUniqueAssetPath($"{Path.Combine(spritesFolder, name)}.png");
 			var texture = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGBA32, false);
 			texture.SetPixels32(pixels.ToArray());
 			texture.Apply();
-			if (!Directory.Exists(spritesFolder)) Directory.CreateDirectory(spritesFolder);
 			File.WriteAllBytes(assetPath, texture.EncodeToPNG());
 			AssetDatabase.ImportAsset(assetPath);
 			var importer = (TextureImporter)AssetImporter.GetAtPath(assetPath);
@@ -123,24 +111,13 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			return transform;
 		}
 
-		public Transform CreateLinkedObject(string id, string name, Rect rect, Transform parent, ImageObject imageObject) {
+		public Transform CreateLinkedObject(string id, string name, Rect rect, Quaternion quaternion, Transform parent) {
 			var linkedPrefab = _linkedObjects[id];
-			if (_config.ImportLinkedObjectsMode == ImportLinkedObjectsMode.SingleImageFromFirstUsage &&
-			    linkedPrefab.Prefab.transform.childCount == 0) {
-				var prefabTransform = ((GameObject) PrefabUtility.InstantiatePrefab(linkedPrefab.Prefab))
-					.GetComponent<Transform>();
-				
-				imageObject.CreateAsset(prefabTransform, this);
-				if (prefabTransform.childCount > 0) {
-					prefabTransform.GetChild(0).localPosition = Vector3.zero;	
-				}
-				PrefabUtility.ApplyPrefabInstance(prefabTransform.gameObject, InteractionMode.AutomatedAction);
-				Object.DestroyImmediate(prefabTransform.gameObject);
-			}
 			var transform = ((GameObject) PrefabUtility.InstantiatePrefab(linkedPrefab.Prefab))
 				.GetComponent<Transform>();
 			transform.gameObject.name = name;
-			//transform.localScale = rect.size / linkedPrefab.OriginalSize;
+			transform.localScale = rect.size / linkedPrefab.OriginalSize;
+			transform.rotation = quaternion;
 			PlaceGameObject(transform, rect, parent);
 			return transform;
 		}

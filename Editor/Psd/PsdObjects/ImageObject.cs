@@ -1,14 +1,11 @@
 using System;
-using System.IO;
 using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using Unity.Collections;
 using Unity.Jobs;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 	[Serializable]
@@ -20,6 +17,13 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 		public ImageObject(Layer psdFileLayer, GroupObject parentObject, string name) :
 			this(psdFileLayer, parentObject) {
 			Name = name;
+		}
+		
+		public ImageObject(NativeArray<Color32> pixels, Layer psdFileLayer, GroupObject parentObject, string name) : base(psdFileLayer, parentObject) {
+			psdFileLayer.CreateMissingChannels();
+			if (pixels.Length == 0 || psdFileLayer.Rect.Width <= 0 || psdFileLayer.Rect.Height <= 0) return;
+			Name = name;
+			_pixels = pixels;
 		}
 
 		public ImageObject(Layer psdFileLayer, GroupObject parentObject) : base(psdFileLayer, parentObject) {

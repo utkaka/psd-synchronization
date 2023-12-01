@@ -22,15 +22,18 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 	/// Contains settings and callbacks that affect the loading of a PSD file.
 	/// </summary>
 	public class Context {
+		public string PsdPath { get; private set; }
 		public Encoding Encoding { get; private set; }
 		public ILogger Logger { get; private set; }
 
-		public Context() {
+		public Context(string psdPath) {
+			PsdPath = psdPath;
 			Encoding = Encoding.Default;
 			Logger = new DummyLogger();
 		}
 		
-		public Context(ILogger logger) {
+		public Context(string psdPath, ILogger logger) {
+			PsdPath = psdPath;
 			Encoding = Encoding.Default;
 			Logger = logger;
 		}

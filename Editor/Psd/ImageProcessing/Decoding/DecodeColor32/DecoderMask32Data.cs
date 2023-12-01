@@ -12,7 +12,6 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.Deco
 		private readonly int _inLayerY;
 		private readonly int _width;
 		private readonly int _height;
-		private readonly int _layerWidth;
 
 		public bool Present => _present;
 
@@ -22,7 +21,6 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.Deco
 			_inLayerY = 0;
 			_width = 0;
 			_height = 0;
-			_layerWidth = 0;
 			_alphaChannel = alphaChannel;
 		}
 
@@ -32,7 +30,6 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.ImageProcessing.Decoding.Deco
 			_inLayerY = inLayerY;
 			_width = width;
 			_height = height;
-			_layerWidth = layerWidth;
 			_alphaChannel = alphaChannel;
 		}
 

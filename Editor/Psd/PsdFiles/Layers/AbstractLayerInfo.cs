@@ -79,6 +79,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers {
 					result = new TypeToolInfo(reader);
 					break;
 				case "SoLd":
+				case "SoLE":
 					result = new PlacedLayerInfo(reader);
 					break;
 				case "lyid":

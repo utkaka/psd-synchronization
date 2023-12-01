@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
+using com.utkaka.PsdSynchronization.Editor.Psd.Extensions;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Descriptors.Elements;
@@ -46,7 +47,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			_matrix.SetRow(2, new Vector4(0.0f, 0.0f, 1.0f, 0.0f));
 			_matrix.SetRow(3, new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 			
-			_textRect = RectUtils.RectFromBounds(((UnitFloatElement) bounds["Left"]).Value * _matrix.lossyScale.x,
+			_textRect = RectExtensions.RectFromBounds(((UnitFloatElement) bounds["Left"]).Value * _matrix.lossyScale.x,
 				((UnitFloatElement) bounds["Top "]).Value * _matrix.lossyScale.y, ((UnitFloatElement) bounds["Rght"]).Value * _matrix.lossyScale.x,
 				((UnitFloatElement) bounds["Btom"]).Value * _matrix.lossyScale.y);
 

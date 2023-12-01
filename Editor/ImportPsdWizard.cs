@@ -32,8 +32,8 @@ namespace com.utkaka.PsdSynchronization.Editor {
 		private void OnWizardCreate() {
 			var loggerType = PsdSynchronizationSettingsProvider.GetLoggerType();
 			var context = loggerType == PsdSynchronizationSettingsProvider.LoggerType.Console
-				? new Context(Debug.unityLogger)
-				: new Context(); 
+				? new Context(_psdPath, Debug.unityLogger)
+				: new Context(_psdPath); 
 
 			var stream = File.OpenRead(_psdPath);
 			/*var psdFile = new PsdFile(stream, context);

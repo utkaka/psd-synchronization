@@ -5,18 +5,14 @@ using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.ImageResources;
-using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo;
 using com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace com.utkaka.PsdSynchronization.Editor.Psd {
 	[Serializable]
 	public class PsdRootObject {
-		[SerializeField]
-		private string _id;
 		[SerializeField]
 		private string _name;
 		[SerializeField]
@@ -26,7 +22,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 		[SerializeField]
 		private int _width;
 		[SerializeField]
-		private List<PsdRootObject> _linkedRootObjects;
+		private List<PsdLinkedObject> _linkedRootObjects;
 		[SerializeField]
 		private List<AbstractPsdObject> _psdObjects;
 		[SerializeField]
@@ -37,12 +33,11 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 		public PsdRootObject(string id, string name, Stream input, Context context) : this(id, name, new PsdFile(input, context)) { }
 
 		public PsdRootObject(string id, string name, PsdFile psdFile) {
-			_id = id;
 			_name = name;
 			// Multichannel images are loaded by processing each channel as a
 			// grayscale layer.
 			if (psdFile.ColorMode == PsdColorMode.Multichannel) {
-				CreateLayersFromChannels(psdFile);
+				psdFile.CreateLayersFromChannels();
 				psdFile.ColorMode = PsdColorMode.Grayscale;
 			}
 
@@ -51,7 +46,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 			_imageCompression = psdFile.ImageCompression;
 			_resolution = psdFile.Resolution;
 			_baseImage = new ImageObject(psdFile.BaseLayer, null, _name);
-			_linkedRootObjects = new List<PsdRootObject>();
+			_linkedRootObjects = new List<PsdLinkedObject>();
 			_psdObjects = new List<AbstractPsdObject>();
 
 			psdFile.VerifyLayerSections();
@@ -60,7 +55,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 				if (additionalInfo is not LinkedFilesInfo linkedFilesInfo) continue;
 				foreach (var linkedFile in linkedFilesInfo.LinkedFiles) {
 					if (linkedFile.File == null) continue;
-					_linkedRootObjects.Add(new PsdRootObject(linkedFile.ID,
+					_linkedRootObjects.Add(new PsdLinkedObject(linkedFile.ID,
 						Path.GetFileNameWithoutExtension(linkedFile.Name.Remove(linkedFile.Name.Length - 1)),
 						linkedFile.File));
 				}
@@ -94,17 +89,9 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 		}
 
 		public void CreateMainAsset(AssetContext assetContext) {
+			_baseImage.CreateAsset(null, assetContext);
 			var root = assetContext.CreateRootObject(_name);
-			//_baseImage.CreateAsset(root, assetContext);
 			CreateAssets(assetContext, root, "");
-			PrefabUtility.ApplyPrefabInstance(root.gameObject, InteractionMode.AutomatedAction);
-		}
-		
-		private void CreateLinkedAsset(AssetContext assetContext, string path) {
-			var root = assetContext.CreateLinkedRootObject(_id, _name, path, new Vector2(_width, _height), _baseImage);
-			if (root == null) return;
-			path = Path.Combine(path, _name);
-			CreateAssets(assetContext, root, path);
 			PrefabUtility.ApplyPrefabInstance(root.gameObject, InteractionMode.AutomatedAction);
 		}
 
@@ -149,45 +136,6 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd {
 			}
 			psdFile.Layers.Reverse();
 			psdFile.Save(output, context);*/
-		}
-		
-		private static void CreateLayersFromChannels(PsdFile psdFile) {
-			if (psdFile.ColorMode != PsdColorMode.Multichannel) throw new Exception("Not a multichannel image.");
-			if (psdFile.Layers.Count > 0) throw new PsdInvalidException("Multichannel image should not have layers.");
-			// Get alpha channel names, preferably in Unicode.
-			var alphaChannelNames = (AlphaChannelNames) psdFile.ImageResourceList.Get(ResourceID.AlphaChannelNames);
-			var unicodeAlphaNames = (UnicodeAlphaNames) psdFile.ImageResourceList.Get(ResourceID.UnicodeAlphaNames);
-			if (alphaChannelNames == null && unicodeAlphaNames == null) throw new PsdInvalidException("No channel names found.");
-
-			var channelNames = unicodeAlphaNames != null ? unicodeAlphaNames.ChannelNames : alphaChannelNames.ChannelNames;
-			var channels = psdFile.BaseLayer.Channels;
-			if (channels.Count > channelNames.Count) throw new PsdInvalidException("More channels than channel names.");
-
-			// Channels are stored from top to bottom, but layers are stored from bottom to top.
-			var channelsNamesReversed = channels.Zip(channelNames, Tuple.Create).Reverse();
-			foreach (var (channel, channelName) in channelsNamesReversed) {
-				// Copy metadata over from base layer
-				var layer = new Layer(psdFile) {
-					Rect = psdFile.BaseLayer.Rect,
-					Visible = true,
-					Masks = new MaskInfo()
-				};
-				layer.BlendingRangesData = new BlendingRanges(layer);
-
-				// We do not attempt to reconstruct the appearance of the image, but
-				// only to provide access to the channels image data.
-				layer.Name = channelName;
-				layer.BlendModeKey = PsdBlendMode.Darken;
-				layer.Opacity = 255;
-
-				// Copy channel image data into the new grayscale layer
-				var layerChannel = new Channel(0, layer) {
-					ImageCompression = channel.ImageCompression,
-					ImageData = channel.ImageData
-				};
-				layer.Channels.Add(layerChannel);
-				psdFile.Layers.Add(layer);
-			}
 		}
 	}
 }

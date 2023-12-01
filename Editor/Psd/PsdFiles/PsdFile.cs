@@ -51,6 +51,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 			Version = version;
 
 			BaseLayer = new Layer(this);
+			BaseLayer.Opacity = 255;
 			ImageResourceList = new ImageResourceList();
 			Layers = new List<Layer>();
 			AdditionalInfo = new List<AbstractLayerInfo>();
@@ -762,6 +763,45 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles {
 		}
 
 		#endregion
+		
+		public void CreateLayersFromChannels() {
+			if (ColorMode != PsdColorMode.Multichannel) throw new Exception("Not a multichannel image.");
+			if (Layers.Count > 0) throw new PsdInvalidException("Multichannel image should not have layers.");
+			// Get alpha channel names, preferably in Unicode.
+			var alphaChannelNames = (AlphaChannelNames) ImageResourceList.Get(ResourceID.AlphaChannelNames);
+			var unicodeAlphaNames = (UnicodeAlphaNames) ImageResourceList.Get(ResourceID.UnicodeAlphaNames);
+			if (alphaChannelNames == null && unicodeAlphaNames == null) throw new PsdInvalidException("No channel names found.");
+
+			var channelNames = unicodeAlphaNames != null ? unicodeAlphaNames.ChannelNames : alphaChannelNames.ChannelNames;
+			var channels = BaseLayer.Channels;
+			if (channels.Count > channelNames.Count) throw new PsdInvalidException("More channels than channel names.");
+
+			// Channels are stored from top to bottom, but layers are stored from bottom to top.
+			var channelsNamesReversed = channels.Zip(channelNames, Tuple.Create).Reverse();
+			foreach (var (channel, channelName) in channelsNamesReversed) {
+				// Copy metadata over from base layer
+				var layer = new Layer(this) {
+					Rect = BaseLayer.Rect,
+					Visible = true,
+					Masks = new MaskInfo()
+				};
+				layer.BlendingRangesData = new BlendingRanges(layer);
+
+				// We do not attempt to reconstruct the appearance of the image, but
+				// only to provide access to the channels image data.
+				layer.Name = channelName;
+				layer.BlendModeKey = PsdBlendMode.Darken;
+				layer.Opacity = 255;
+
+				// Copy channel image data into the new grayscale layer
+				var layerChannel = new Channel(0, layer) {
+					ImageCompression = channel.ImageCompression,
+					ImageData = channel.ImageData
+				};
+				layer.Channels.Add(layerChannel);
+				Layers.Add(layer);
+			}
+		}
 	}
 
 

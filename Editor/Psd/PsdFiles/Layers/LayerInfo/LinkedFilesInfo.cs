@@ -98,7 +98,12 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdFiles.Layers.LayerInfo {
 
             if (_type == "liFE") {
                 _linkedFileDescriptorVersion = reader.ReadUInt32();
-                _linkedFileDescriptor = new Descriptor(reader);	
+                _linkedFileDescriptor = new Descriptor(reader);
+                var relativePath = ((TextElement) _linkedFileDescriptor.Items["relPath"]).Value;
+                relativePath = relativePath[..^1];
+                var stream = System.IO.File.OpenRead(Path.Combine(Path.GetDirectoryName(reader.Context.PsdPath) ?? string.Empty, relativePath));
+                _file = new PsdFile(stream, reader.Context);
+                stream.Close();
             }
             
             if (_type == "liFE" && _version > 3) {
