@@ -1,6 +1,6 @@
 {
   "name": "com.utkaka.psd-synchronization",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "PSD synchronization",
   "description": "Package for bidirectional PSD synchronization",
   "unity": "2019.3",
