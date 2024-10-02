@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts;
@@ -61,10 +62,14 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.PsdObjects {
 			var offset = 0;
 			for (var i = 0; i < layers.Count; i++) {
 				var layer = layers[i];
-				var pixelCount = layersPixels[i].Length; 
+				var pixelCount = layersPixels[i].Length;
 				combinedImages[i] = new CombinedImageData(offset, layer.Rect.X, _height - layer.Rect.Y - layer.Rect.Height, layer.Rect.Width,
 					layer.Rect.Height, layer.Opacity);
-				NativeArray<Color32>.Copy(layersPixels[i], 0, combinedPixels, offset, pixelCount);
+				try {
+					NativeArray<Color32>.Copy(layersPixels[i], 0, combinedPixels, offset, pixelCount);
+				} catch (Exception) {
+					Debug.LogError($"Something went wrong with the layer {layer.Name} in {name}. Skipping.");
+				}
 				offset += pixelCount;
 				layersPixels[i].Dispose();
 			}
