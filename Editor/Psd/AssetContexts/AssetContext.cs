@@ -82,6 +82,7 @@ namespace com.utkaka.PsdSynchronization.Editor.Psd.AssetContexts {
 			AssetDatabase.ImportAsset(assetPath);
 			var importer = (TextureImporter)AssetImporter.GetAtPath(assetPath);
 			importer.textureType = TextureImporterType.Sprite;
+			importer.spriteImportMode = SpriteImportMode.Single;
 			EditorUtility.SetDirty(importer);
 			importer.SaveAndReimport();
 
